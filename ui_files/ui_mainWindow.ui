@@ -1,0 +1,550 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>800</width>
+    <height>600</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>800</width>
+    <height>600</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Visão Computacional - Renan Sandes 2020.1 - UFS</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../icon.png</normaloff>../icon.png</iconset>
+  </property>
+  <property name="autoFillBackground">
+   <bool>false</bool>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:1, x2:1, y2:0, stop:0 rgba(227, 227, 227, 255), stop:1 rgba(0, 50, 100, 115));</string>
+  </property>
+  <property name="iconSize">
+   <size>
+    <width>100</width>
+    <height>100</height>
+   </size>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <widget class="QWidget" name="horizontalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>781</width>
+      <height>541</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="3,4">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetMaximumSize</enum>
+     </property>
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QGroupBox" name="groupBox">
+       <property name="font">
+        <font>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
+       </property>
+       <property name="title">
+        <string>Imagens de entrada</string>
+       </property>
+       <widget class="QWidget" name="verticalLayoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>20</y>
+          <width>311</width>
+          <height>511</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout" stretch="8,1,8,0">
+         <item>
+          <widget class="QLabel" name="imgFrame1">
+           <property name="maximumSize">
+            <size>
+             <width>309</width>
+             <height>219</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
+           </property>
+           <property name="text">
+            <string>Abra para começar.</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QPushButton" name="pushButton_usarResultado1">
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="autoFillBackground">
+              <bool>false</bool>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">background-color: rgb(0,50, 100);</string>
+             </property>
+             <property name="text">
+              <string>Usar resultado</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButton_abrirPara1">
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">background-color: rgb(0,50, 100);
+</string>
+             </property>
+             <property name="text">
+              <string>Abrir</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QLabel" name="imgFrame2">
+           <property name="maximumSize">
+            <size>
+             <width>309</width>
+             <height>219</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(218, 218, 218,0);</string>
+           </property>
+           <property name="text">
+            <string>Abra para começar.</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_5">
+           <item>
+            <widget class="QPushButton" name="pushButton_usarResultado2">
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="autoFillBackground">
+              <bool>false</bool>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">background-color: rgb(0,50, 100);</string>
+             </property>
+             <property name="text">
+              <string>Usar resultado</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButton_abrirPara2">
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">background-color: rgb(0,50, 100);
+</string>
+             </property>
+             <property name="text">
+              <string>Abrir</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0">
+       <item>
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
+         </property>
+         <property name="title">
+          <string>Resultado</string>
+         </property>
+         <widget class="QWidget" name="verticalLayoutWidget_3">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>20</y>
+            <width>421</width>
+            <height>341</height>
+           </rect>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
+            <widget class="QLabel" name="imgFrame3">
+             <property name="text">
+              <string>Escolha um operação no menu.</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QGroupBox" name="panel_group">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>370</y>
+            <width>421</width>
+            <height>161</height>
+           </rect>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
+          </property>
+          <property name="title">
+           <string>Controles</string>
+          </property>
+          <widget class="QWidget" name="horizontalLayoutWidget_2">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>10</y>
+             <width>421</width>
+             <height>151</height>
+            </rect>
+           </property>
+           <layout class="QHBoxLayout" name="panel_layout"/>
+          </widget>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuArquivo">
+    <property name="title">
+     <string>Arquivo</string>
+    </property>
+    <addaction name="actionAbrir_para_principal"/>
+    <addaction name="actionAbrir_para_auxiliar"/>
+    <addaction name="actionSalvar_resultado"/>
+   </widget>
+   <widget class="QMenu" name="menuConverter">
+    <property name="title">
+     <string>Converter</string>
+    </property>
+    <addaction name="actionConverter_para_Tons_de_Cinza"/>
+    <addaction name="actionConverter_para_Preto_e_Branco_bin_rio"/>
+   </widget>
+   <widget class="QMenu" name="menuTransformar">
+    <property name="title">
+     <string>Transformar</string>
+    </property>
+    <addaction name="actionAplicar_transforma_es_geom_tricas"/>
+   </widget>
+   <widget class="QMenu" name="menuOp_Aritim_ticas">
+    <property name="title">
+     <string>Op.Aritiméticas</string>
+    </property>
+    <addaction name="actionSomar_constante"/>
+    <addaction name="actionMultiplicar_por_constante"/>
+    <addaction name="actionSomar_Imagens"/>
+   </widget>
+   <widget class="QMenu" name="menuOp_L_gicas">
+    <property name="title">
+     <string>Op.Lógicas</string>
+    </property>
+    <widget class="QMenu" name="menuElemento_a_elemento">
+     <property name="title">
+      <string>Elemento a elemento</string>
+     </property>
+     <addaction name="actionAnd"/>
+     <addaction name="actionOr"/>
+     <addaction name="actionXor"/>
+     <addaction name="actionNot"/>
+    </widget>
+    <widget class="QMenu" name="menuBitwise">
+     <property name="title">
+      <string>Bitwise</string>
+     </property>
+     <addaction name="actionAnd_2"/>
+     <addaction name="actionOr_2"/>
+     <addaction name="actionXor_2"/>
+     <addaction name="actionNot_2"/>
+    </widget>
+    <addaction name="menuElemento_a_elemento"/>
+    <addaction name="menuBitwise"/>
+   </widget>
+   <widget class="QMenu" name="menuBordas">
+    <property name="title">
+     <string>Bordas</string>
+    </property>
+    <addaction name="actionDerivativo"/>
+    <addaction name="actionSobel"/>
+    <addaction name="actionKirsch"/>
+   </widget>
+   <widget class="QMenu" name="menuHistogramas">
+    <property name="title">
+     <string>Histogramas</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuFiltros">
+    <property name="title">
+     <string>Filtros</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuMorfologia">
+    <property name="title">
+     <string>Morfologia</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuSegmenta_o">
+    <property name="title">
+     <string>Segmentação</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuMais">
+    <property name="title">
+     <string>Mais</string>
+    </property>
+    <addaction name="actionCaracter_sticas"/>
+    <addaction name="actionSURF"/>
+   </widget>
+   <addaction name="menuArquivo"/>
+   <addaction name="menuConverter"/>
+   <addaction name="menuTransformar"/>
+   <addaction name="menuOp_Aritim_ticas"/>
+   <addaction name="menuOp_L_gicas"/>
+   <addaction name="menuBordas"/>
+   <addaction name="menuHistogramas"/>
+   <addaction name="menuFiltros"/>
+   <addaction name="menuMorfologia"/>
+   <addaction name="menuSegmenta_o"/>
+   <addaction name="menuMais"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionAbrir_para_principal">
+   <property name="text">
+    <string>Abrir para principal</string>
+   </property>
+  </action>
+  <action name="actionAbrir_para_auxiliar">
+   <property name="text">
+    <string>Abrir para auxiliar</string>
+   </property>
+  </action>
+  <action name="actionSalvar_resultado">
+   <property name="text">
+    <string>Salvar resultado</string>
+   </property>
+  </action>
+  <action name="actionConverter_para_Tons_de_Cinza">
+   <property name="text">
+    <string>Converter para Tons de Cinza</string>
+   </property>
+  </action>
+  <action name="actionConverter_para_Preto_e_Branco_bin_rio">
+   <property name="text">
+    <string>Converter para Preto e Branco (binário)</string>
+   </property>
+  </action>
+  <action name="actionAplicar_transforma_es_geom_tricas">
+   <property name="text">
+    <string>Aplicar transformações geométricas</string>
+   </property>
+  </action>
+  <action name="actionSomar_constante">
+   <property name="text">
+    <string>Somar constante</string>
+   </property>
+  </action>
+  <action name="actionMultiplicar_por_constante">
+   <property name="text">
+    <string>Multiplicar por constante</string>
+   </property>
+  </action>
+  <action name="actionSomar_Imagens">
+   <property name="text">
+    <string>Somar Imagens</string>
+   </property>
+  </action>
+  <action name="actionAnd">
+   <property name="text">
+    <string>And</string>
+   </property>
+  </action>
+  <action name="actionOr">
+   <property name="text">
+    <string>Or</string>
+   </property>
+  </action>
+  <action name="actionXor">
+   <property name="text">
+    <string>Xor</string>
+   </property>
+  </action>
+  <action name="actionNot">
+   <property name="text">
+    <string>Not</string>
+   </property>
+  </action>
+  <action name="actionAnd_2">
+   <property name="text">
+    <string>And</string>
+   </property>
+  </action>
+  <action name="actionOr_2">
+   <property name="text">
+    <string>Or</string>
+   </property>
+  </action>
+  <action name="actionXor_2">
+   <property name="text">
+    <string>Xor</string>
+   </property>
+  </action>
+  <action name="actionNot_2">
+   <property name="text">
+    <string>Not</string>
+   </property>
+  </action>
+  <action name="actionDerivativo">
+   <property name="text">
+    <string>Derivativo</string>
+   </property>
+  </action>
+  <action name="actionSobel">
+   <property name="text">
+    <string>Sobel</string>
+   </property>
+  </action>
+  <action name="actionKirsch">
+   <property name="text">
+    <string>Kirsch</string>
+   </property>
+  </action>
+  <action name="actionCaracter_sticas">
+   <property name="text">
+    <string>Características</string>
+   </property>
+  </action>
+  <action name="actionSURF">
+   <property name="text">
+    <string>SURF</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
