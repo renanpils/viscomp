@@ -9,3 +9,5 @@ As operações estão implementadas no script operacoes_viscom.py
 
 Programador: Renan Sandes
 Data: Mai/2020
+contato: renanpils@gmail.com
+https://github.com/renanpils/viscomp
