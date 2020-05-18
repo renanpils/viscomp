@@ -515,7 +515,7 @@ def derivativo(A: np.ndarray, apply_threshold = False, threshold=127):
     derivativo poucas iterações
     
     Aplica mascara derivativa na direção dada.
-    Retorna np.ndarray normalizada.
+    Retorna np.ndarray resultado.
 
     '''
     t1 = time.perf_counter()
@@ -567,10 +567,7 @@ def derivativo(A: np.ndarray, apply_threshold = False, threshold=127):
     # Benchmarking
     # t2 = time.perf_counter() 
     # print('derivativo: time elapsed: {} s'.format(t2-t1))
-    if apply_threshold:
-        return convert_pb_para_bin(np.sqrt(np.power(Gx,2)+np.power(Gy,2)), thresh=threshold)
-    else:
-        return normalize_uint8(np.sqrt(np.power(Gx,2)+np.power(Gy,2)))
+    return np.sqrt(np.power(Gx,2)+np.power(Gy,2))
 
 
 def aplica_mascara(img:np.ndarray, mask: np.ndarray, fast=True, normalize=True):
@@ -611,8 +608,11 @@ def aplica_mascara(img:np.ndarray, mask: np.ndarray, fast=True, normalize=True):
         return imgRes
 
 
-def kirsch(A:np.ndarray,apply_threshold= True, threshold= 127):
-
+def kirsch(A:np.ndarray):
+    '''
+    A - IMAGEM
+    retorna - imagem normalizada.
+    '''
     # Alocar o lugar da imagem resultante
     R = np.zeros(A.shape)
 
@@ -629,10 +629,7 @@ def kirsch(A:np.ndarray,apply_threshold= True, threshold= 127):
         G = aplica_mascara(A, mask, normalize=False)
         R[G>R] = G[G>R] 
     
-    if apply_threshold:
-        return convert_pb_para_bin(normalize_uint8(R), threshold)
-    else:
-        return normalize_uint8(R)
+    return normalize_uint8(R)
 
 
 ##############################

@@ -441,13 +441,14 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         
         # Calcular o derivativo.
         self.img3 = derivativo(im)
+        self.img3 = normalize_uint8(self.img3)
 
         # Aplicar threshold
         if self.current_widget_form.checkBox_limiar.isChecked():
             self.img3 = convert_pb_para_bin(self.img3, thresh)
         # Preparar para sobrepor borda na imagem
         self.img2 = np.stack([im, im, im],axis=-1)
-        self.img2[self.img3>1] = np.array([255,0,255]) 
+        self.img2[self.img3>thresh] = np.array([255,0,255]) 
         # mostrar a tela sobreposta no frame maior
         if self.current_widget_form.checkBox_sobrepor.isChecked():
             self.img3, self.img2 = self.img2, self.img3
@@ -472,7 +473,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
             self.img3 = convert_pb_para_bin(self.img3, thresh)
         # Preparar para sobrepor borda na imagem
         self.img2 = np.stack([im, im, im],axis=-1)
-        self.img2[self.img3>1] = np.array([255,0,255]) 
+        self.img2[self.img3>thresh] = np.array([255,0,255]) 
         # mostrar a tela sobreposta no frame maior
         if self.current_widget_form.checkBox_sobrepor.isChecked():
             self.img3, self.img2 = self.img2, self.img3
@@ -489,15 +490,14 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         thresh = self.get_number_whithout_error(self.current_widget_form.lineEdit_limiar.text(),'int')
         
         # Calcular o derivativo.
-        self.img3 = kirsch(im, threshold= thresh,
-            apply_threshold=False)
+        self.img3 = kirsch(im)
         
         # Aplicar threshold
         if self.current_widget_form.checkBox_limiar.isChecked():
             self.img3 = convert_pb_para_bin(self.img3, thresh)
         # Preparar para sobrepor borda na imagem
         self.img2 = np.stack([im, im, im],axis=-1)
-        self.img2[self.img3>1] = np.array([255,0,255]) 
+        self.img2[self.img3>thresh] = np.array([255,0,255]) 
         # mostrar a tela sobreposta no frame maior
         if self.current_widget_form.checkBox_sobrepor.isChecked():
             self.img3, self.img2 = self.img2, self.img3
