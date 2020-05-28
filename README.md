@@ -5,7 +5,7 @@ Este repositório contém o software utilitário que implementa os diversos algo
 
 Para execução da interface, executar o script 'main.py'
 
-As operações estão implementadas no script operacoes_viscom.py
+As operações estão implementadas no script operacoes_viscomp.py
 
 Programador: Renan Sandes
 Data: Mai/2020

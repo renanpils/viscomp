@@ -94,6 +94,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.ui = Ui_MainWindow()
         # Inicializar a janela do qt designer
         self.ui.setupUi(self)
+        self.setWindowIcon(QtGui.QIcon('icon.png'))
         # Colocar o widget de controle:
         self.put_current_widget(ui_start_widget)
         # Inicializar o menu:
