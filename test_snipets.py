@@ -6,12 +6,6 @@ import time
 import os
 
 '''
-Este código é utilizado para testes. Nele são implementados algoritmos antes de serem feitas
-modificações nos outros arquivos.
-
-Atual: canny
-
-Atividades: 
 
 - TODO:geração de histograma
 - TODO:equalização de histogramas
