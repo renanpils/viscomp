@@ -8,6 +8,7 @@ Data: Mai/2020
 import time
 import cv2
 import numpy as np
+import matplotlib.pyplot as plt
 
 class MyImage:
     '''
@@ -25,13 +26,16 @@ class MyImage:
         else:
             self.type = ''
 
+
 def abrir_img(path):
     '''
     Função para abrir as imagens
     path: diretório da imagem
     returns: ndarray (imagem em matriz)
     '''
-    return cv2.imread(path)
+    return cv2.imread(path, cv2.IMREAD_COLOR)
+    
+
 
 def normalize_uint8(img):
     '''
@@ -50,6 +54,7 @@ def normalize_uint8(img):
         return np.uint8(img)
     # Retornar convertendo para uint8.
     return np.uint8(img2)
+
 
 def clip_uint8(img):
     '''Função para clipar os valores na faixa de 8 bits (entre 0 e 255). Retorna img em uint8'''
@@ -72,7 +77,8 @@ def convert_color_para_pb(img_color, conv_BGR= np.array([0.1140, 0.5870, 0.2989]
     
     else:
         return np.uint8(img_color)
-            
+
+
 def convert_pb_para_bin(img_pb, thresh):
     '''
     Converter imagem em pb para binario
@@ -83,6 +89,7 @@ def convert_pb_para_bin(img_pb, thresh):
     img_bin = 255 * (img_pb > thresh)
     # Retornar normalizando
     return np.uint8(img_bin)
+
 
 def soma_imagens(img1:np.ndarray, img2:np.ndarray, normalize=True):
     '''
@@ -110,6 +117,7 @@ def soma_imagens(img1:np.ndarray, img2:np.ndarray, normalize=True):
         # Jeito besta de retornar se houve algum erro.
         print('Imagens de dimensões diferentes')
 
+
 def soma_imagem_constante(img ,k, normalize=False):
     '''
     somar uma imagem com uma constante k.
@@ -123,6 +131,7 @@ def soma_imagem_constante(img ,k, normalize=False):
     else:
         return clip_uint8(imgC)
 
+
 def multiplicar_imagem_constante(img, k:float, normalize= True):
     ''' Multiplicar uma imagem com uma constante. '''
     imgC = k * img
@@ -131,12 +140,14 @@ def multiplicar_imagem_constante(img, k:float, normalize= True):
     if not normalize:
         return clip_uint8(imgC)
 
+
 def op_logica_and(imgA:np.ndarray, imgB:np.ndarray):
     '''Realizar a operação lógica AND'''
     # Comparar os tamanhos:
     if np.array_equal(imgA.shape, imgB.shape):
         # Retornar a op and.
         return np.uint8(255 * np.logical_and(imgA>127, imgB>127))
+
 
 def op_logica_or(imgA:np.ndarray, imgB:np.ndarray):
     '''Realizar a operação lógica OR'''
@@ -145,6 +156,7 @@ def op_logica_or(imgA:np.ndarray, imgB:np.ndarray):
         # Retornar a op or.
         return np.uint8(255 * np.logical_or(imgA>127, imgB>127))
 
+
 def op_logica_xor(imgA:np.ndarray, imgB:np.ndarray):
     '''Realizar a operação lógica XOR'''
     # Comparar os tamanhos:
@@ -152,10 +164,12 @@ def op_logica_xor(imgA:np.ndarray, imgB:np.ndarray):
         # Retornar a op xor.
         return np.uint8(255 * np.logical_xor(imgA>127, imgB>127))
 
+
 def op_logica_not(imgA:np.ndarray):
     '''Realizar a operação lógica NOT'''
     # Retornar a op and.
     return np.uint8(255 * np.logical_not(imgA>127))
+
 
 def op_bitwise_and(imgA:np.ndarray, imgB:np.ndarray):
     '''Realizar a operação lógica bitwise AND'''
@@ -163,11 +177,13 @@ def op_bitwise_and(imgA:np.ndarray, imgB:np.ndarray):
         # Retornar a op bitwise and.
         return np.uint8(np.bitwise_and(imgA, imgB))
 
+
 def op_bitwise_or(imgA:np.ndarray, imgB:np.ndarray):
     '''Realizar a operação lógica bitwise OR'''
     if np.array_equal(imgA.shape, imgB.shape):
         # Retornar a op bitwise or.
         return np.uint8(np.bitwise_or(imgA, imgB))
+
 
 def op_bitwise_xor(imgA:np.ndarray, imgB:np.ndarray):
     '''Realizar a operação lógica bitwise XOR'''
@@ -175,10 +191,12 @@ def op_bitwise_xor(imgA:np.ndarray, imgB:np.ndarray):
         # Retornar a op bitwise xor.
         return np.uint8(np.bitwise_xor(imgA, imgB))
 
+
 def op_bitwise_not(imgA:np.ndarray):
     '''Realizar a operação lógica bitwise NOT'''
     # Retornar a op bitwise and.
     return np.uint8(np.bitwise_not(imgA))
+
 
 class my_T:
     '''
@@ -213,6 +231,7 @@ class my_T:
         
         '''
         return np.array([[1, sy, 0],[sx, 1, 0], [0, 0, 1]])
+
 
 def transform_geom(img: np.ndarray, dx=0, dy=0, theta=45,scale_factor= 1,center=True,cx=0, cy=0): 
     '''
@@ -262,6 +281,7 @@ def transform_geom(img: np.ndarray, dx=0, dy=0, theta=45,scale_factor= 1,center=
     #print('Time elapsed: ', t2-t1)
 
     return np.uint8(imgB)
+
 
 def transform_geom_rapida(img: np.ndarray, dx=0, dy=0, theta=45,scale_factor= 1,center=True, cx=0, cy=0):
     '''
@@ -362,6 +382,7 @@ def transform_geom_rapida(img: np.ndarray, dx=0, dy=0, theta=45,scale_factor= 1,
     #print('Time elapsed: ', t2-t1)
 
     return np.uint8(imgB)
+
 
 def sobel(A:np.ndarray, threshold=127, normalizado=True):
     '''
@@ -632,8 +653,7 @@ def kirsch(A:np.ndarray):
     return normalize_uint8(R)
 
 
-##############################
-# FIXME
+########################## FIXME
 
 def kernel_gaussiano(size, sigma=1):
     size = int(size) // 2
@@ -642,7 +662,191 @@ def kernel_gaussiano(size, sigma=1):
     g =  np.exp(-((x**2 + y**2) / (2.0*sigma**2))) * normal
     return g
 
+
 def canny(img:np.ndarray, thresh=127, sigma=1):
     pass
 
 ###############################
+
+def histograma(img:np.ndarray, normalize=True):
+    '''
+    calcular histogramas para 256 tons de cinza.
+    img: np.ndarray em tons de cinza.
+    retorna histograma np.ndarray (256,)
+    '''
+
+    # Check dimension:
+    if len(img.shape) == 3:
+        img = convert_color_para_pb(img)
+    
+    # Check data type
+    if img.dtype != np.uint8(1).dtype:
+        img = np.uint8(img)
+
+    # Alocar espaço
+    hist = np.zeros(256)
+    for i in range(256):
+        hist[i] = np.sum(img == i)
+
+    # normalizar 
+    if normalize:
+        hist = hist / np.sum(hist)
+
+    return hist
+
+
+def cdf(hist:np.ndarray):
+    '''
+    Calcular a CDF de um histograma normalizado.
+    hist em vetor de shape(n,)
+    return cdf mesmo shape do vetor.
+    '''
+    # Alocar
+    c = np.zeros(hist.shape)
+    # Acumular
+    for i in range(1, len(hist)):
+        c[i] = c[i-1] + hist[i-1]
+    
+    return c
+
+
+def equalizacao_histogramas(img: np.ndarray):
+    '''
+    
+    '''
+    # calcular a cdf do histograma
+    f=cdf(histograma(img))
+
+    # Alocar espaço
+    img_res = np.zeros(img.shape, dtype= 'uint8')
+    # Catar na função de probabilidade e multiplicar.
+    # g[i, j] = img[i, j] * f(img[i, j])
+    img_res = np.uint8(np.multiply(np.take(f, img), img))
+    
+    return img_res
+
+def transformacao_intensidade(img: np.ndarray, 
+                                f =31.875 * np.log2(np.arange(256) + 1)):
+    '''
+    img é a img
+    f é o vetor de lookup ( f(range(256)) )
+    retorna o f resultante
+    '''
+
+    # Alocar espaço
+    img_res = np.zeros(img.shape, dtype= 'uint8')
+    # Catar na função de probabilidade e multiplicar.
+    # g[i, j] = img[i, j] * f(img[i, j])
+    img_res = np.uint8(np.take(f, img))
+
+    return img_res
+    
+def autoescala(img:np.ndarray):
+    
+    # Encontrar o máx.
+    mx = np.max(img)
+    # Encontrar o min
+    mn = np.min(img)
+    # Nova matriz normalizada.
+    # Checar os valores de min e max. Se forem iguais, geram erros.
+    if mn != mx:
+        return np.uint8((255/ (mx-mn)) * (img - mn))
+    else:
+        return np.uint8(img)
+    
+
+def multi_limiarizacao(img, threshs= [127], values= [0, 255]):
+    '''
+    limiariza a imagem de acordo com os limiares em thresh(lista) ou iteravel
+    thresh: iteravel contendo n limiares (em ordem cresecente)
+    values: n+1 valores dos limiares contendo 
+    
+    Ex.: img_limiarizada = multi_limiarizaca(img, threshs=[100, 150], values=[20, 100, 255])
+    
+    retorna a img limiarizada.
+    '''
+    # Alocar
+    img_lim = np.zeros(img.shape)
+
+    t = values[-1] * np.ones(256, dtype='uint8')
+
+    last= 0
+    for trsh, val in zip(threshs, values):
+        t[last:trsh] = val
+        last = trsh
+
+    return np.uint8(np.take(t, img))
+
+
+def limiarizacao_global(img:np.ndarray, thresh=0):
+    '''
+    img: imagem em tons de cinza
+    thresh: limiar inicial
+            para média, deixe 0.
+            para usar o seu, entre com inteiro
+    retorna a img limiarizada e o threshold
+    '''
+
+    # Chute inicial para o threshold
+    if thresh == 0:
+        thresh = img.mean()
+
+    # dT inicial
+    dT = 255
+    # limitar o numero de iterações
+    i=0; iterlimit = 100
+
+    while dT>2 and i< iterlimit:
+        # print(thresh)
+        M1 = (img[img< thresh]).mean()
+        M2 = (img[img>=thresh]).mean()
+        novo_thresh = 0.5* (M1+M2)
+        dT = np.abs(thresh - novo_thresh)
+        thresh = novo_thresh
+        i+=1
+
+    return (np.uint8(255*(img>=thresh)) , thresh)
+
+
+def media_k(h, k):
+    '''
+    intensidade média até o nivel k de um histograma 256.
+    '''
+    return np.sum(np.multiply(np.arange(256), h)[0:int(k+1)])
+
+
+def segmentacao_global_otsu(img:np.ndarray):
+    '''
+    encontra um limiar ótimo conforme o método de otsu
+    retorna uma tupla com a imagem limiarizada e o limiar.
+    '''
+    # Calcular as propabilidades da imagem
+    p = histograma(img) # P robabilidade (histograma)
+    P = cdf(p)          # Cumulativa
+    #P = P+0.00001
+    mg = media_k(P, 255)   # media geral
+
+    # alocar espaço
+    var_k_2 = 0 * np.arange(256,dtype='float32')
+    
+    media_k_vec = np.multiply(np.arange(256), p)
+
+    for k in range(256):
+        var_k_2[k] = P[k] * (np.sum(media_k_vec[0:(k+1)]) - mg)**2 + \
+                     (1-P[k]) * (np.sum(media_k_vec[k+1:]) - mg)**2
+    
+    k_max = np.argmax(var_k_2)
+    
+    #print(k_max)
+    # plt.subplot(2,2,1)
+    # plt.bar(np.arange(256), p, label= 'p'); plt.legend()
+    # plt.subplot(2,2,2)
+    # plt.plot(P, label='P'); plt.legend()
+    # plt.subplot(2,2,3)
+    # plt.plot(var_k, label='var_k'); plt.legend()
+    # plt.subplot(2,2,4)
+    # plt.plot(var_k_2, label='var_k_2'); plt.legend()
+    # plt.show()
+
+    return (np.uint8(255*(img>= int(k_max))) ,int(k_max))
+

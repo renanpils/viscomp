@@ -398,21 +398,35 @@
     <property name="title">
      <string>Histogramas</string>
     </property>
+    <addaction name="actionHistograma"/>
+    <addaction name="actionEqualizar"/>
+    <addaction name="actionAutoescala"/>
+    <addaction name="actionLimiarizar_Global"/>
+    <addaction name="actionLimiarizar_Otsu"/>
    </widget>
    <widget class="QMenu" name="menuFiltros">
     <property name="title">
      <string>Filtros</string>
     </property>
+    <addaction name="actionMedia"/>
+    <addaction name="actionMediana"/>
+    <addaction name="actionPassa_Alta"/>
+    <addaction name="actionLaplaciano"/>
    </widget>
    <widget class="QMenu" name="menuMorfologia">
     <property name="title">
      <string>Morfologia</string>
     </property>
+    <addaction name="actionDilatar"/>
+    <addaction name="actionErodir"/>
+    <addaction name="actionAbretura"/>
+    <addaction name="actionFechamento"/>
    </widget>
    <widget class="QMenu" name="menuSegmenta_o">
     <property name="title">
      <string>Segmentação</string>
     </property>
+    <addaction name="actionMulti_limiarizar"/>
    </widget>
    <widget class="QMenu" name="menuMais">
     <property name="title">
@@ -542,6 +556,76 @@
   <action name="actionSURF">
    <property name="text">
     <string>SURF</string>
+   </property>
+  </action>
+  <action name="actionHistograma">
+   <property name="text">
+    <string>Histograma</string>
+   </property>
+  </action>
+  <action name="actionEqualizar">
+   <property name="text">
+    <string>Equalizar</string>
+   </property>
+  </action>
+  <action name="actionAutoescala">
+   <property name="text">
+    <string>Autoescala</string>
+   </property>
+  </action>
+  <action name="actionLimiarizar_Global">
+   <property name="text">
+    <string>Limiarizar Global</string>
+   </property>
+  </action>
+  <action name="actionLimiarizar_Otsu">
+   <property name="text">
+    <string>Limiarizar Otsu</string>
+   </property>
+  </action>
+  <action name="actionMedia">
+   <property name="text">
+    <string>Media</string>
+   </property>
+  </action>
+  <action name="actionMediana">
+   <property name="text">
+    <string>Mediana</string>
+   </property>
+  </action>
+  <action name="actionPassa_Alta">
+   <property name="text">
+    <string>Passa Alta</string>
+   </property>
+  </action>
+  <action name="actionLaplaciano">
+   <property name="text">
+    <string>Laplaciano</string>
+   </property>
+  </action>
+  <action name="actionDilatar">
+   <property name="text">
+    <string>Dilatação</string>
+   </property>
+  </action>
+  <action name="actionErodir">
+   <property name="text">
+    <string>Erosão</string>
+   </property>
+  </action>
+  <action name="actionAbretura">
+   <property name="text">
+    <string>Abretura</string>
+   </property>
+  </action>
+  <action name="actionFechamento">
+   <property name="text">
+    <string>Fechamento</string>
+   </property>
+  </action>
+  <action name="actionMulti_limiarizar">
+   <property name="text">
+    <string>Multi limiarização</string>
    </property>
   </action>
  </widget>

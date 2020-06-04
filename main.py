@@ -136,6 +136,23 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.ui.actionDerivativo.triggered.connect(self.call_action_derivativo)
         self.ui.actionKirsch.triggered.connect(self.call_action_kirsch)
         self.ui.actionSobel.triggered.connect(self.call_action_sobel)
+        
+        self.ui.actionHistograma.triggered.connect(self.call_action_histograma)
+        self.ui.actionEqualizar.triggered.connect(self.call_action_equalizar)
+        self.ui.actionAutoescala.triggered.connect(self.call_action_autoescala)
+        self.ui.actionLimiarizar_Global.triggered.connect(self.call_action_limiarizar_global)
+        self.ui.actionLimiarizar_Otsu.triggered.connect(self.call_action_limarizar_otsu)
+
+        # # filtros:
+        # self.ui.action.triggered.connect(self.call_action_)
+        # self.ui.action.triggered.connect(self.call_action_)
+        # self.ui.action.triggered.connect(self.call_action_)
+        # self.ui.action.triggered.connect(self.call_action_)
+        # # Morfologia:
+        # self.ui.action.triggered.connect(self.call_action_)
+        # self.ui.action.triggered.connect(self.call_action_)
+        # self.ui.action.triggered.connect(self.call_action_)
+        # self.ui.action.triggered.connect(self.call_action_)
 
     def put_current_widget(self, ui_widget):
         '''colocar um widget referente a uma função na tela'''
@@ -506,10 +523,134 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self. display_on(self.img2, self.ui.imgFrame2)
         self. display_on(self.img3, self.ui.imgFrame3)
 
+    def call_resultado_histograma(self):
+        ''' Executar a ação de calcular e exibir o histograma '''
+        # check se a img é em tons de cinza
+        if len(self.img1.shape) == 3:
+            self.img1 = convert_color_para_pb(self.img1)
+            self.display_on(self.img1, self.ui.imgFrame1)
+        elif len(self.img1.shape)==2:
+            pass
+        else:
+            return
 
+        h = histograma(self.img1)
+        c = cdf(h)
+
+        if self.current_widget_form.checkBox.isChecked() and \
+            (not self.current_widget_form.checkBox_2.isChecked()):
+            plt.title('Histograma')
+            plt.bar(np.arange(256), h)
+
+        elif (not self.current_widget_form.checkBox.isChecked()) and \
+            self.current_widget_form.checkBox_2.isChecked():
+            plt.title('Cumulativa')
+            plt.plot(c)
+
+        elif self.current_widget_form.checkBox.isChecked() and \
+            self.current_widget_form.checkBox_2.isChecked():
+            plt.subplot(1,2,1)
+            plt.title('Histograma')
+            plt.bar(np.arange(256), h)
+            plt.subplot(1,2,2)
+            plt.title('Cumulativa')
+            plt.plot(c)
+    
+        plt.show()
+
+    #HERE
+    def call_resultado_equalizar(self):
+        # check se a img é em tons de cinza
+        if len(self.img1.shape) == 3:
+            self.img1 = convert_color_para_pb(self.img1)
+            self.display_on(self.img1, self.ui.imgFrame1)
+        elif len(self.img1.shape)==2:
+            # Ok, imagem tem apenas um canal.
+            pass
+        else:
+            return
+        
+        # Equalizar os histogramas
+        self.img3 = equalizacao_histogramas(self.img1)
+        # Exibir
+        self.display_on(self.img3, self.ui.imgFrame3)
+
+        if self.current_widget_form.checkBox.isChecked():
+            h1 = histograma(self.img1)
+            h2 = histograma(self.img3)
+            plt.plot(cdf(h1),label='histograma original')
+            plt.plot(cdf(h2),label='histograma equalizado')
+            plt.legend()
+            plt.show()
+
+
+    def call_resultado_autoescala(self):
+        # check se a img é em tons de cinza
+        if len(self.img1.shape) == 3:
+            self.img1 = convert_color_para_pb(self.img1)
+            self.display_on(self.img1, self.ui.imgFrame1)
+            
+        elif len(self.img1.shape)==2:
+            pass
+
+        else:
+            return
+        
+        # Autoescala
+        self.img3 = autoescala(self.img1)
+        # Exibir
+        self.display_on(self.img3, self.ui.imgFrame3)
+        # Caso peçam o histograma:
+        if self.current_widget_form.checkBox.isChecked():
+            h1 = histograma(self.img1)
+            h2 = histograma(self.img3)
+            plt.plot(cdf(h1),label='cumulativa original')
+            plt.plot(cdf(h2),label='cumulativa com autoescala')
+            plt.legend()
+            plt.show()
+
+    def call_resultado_limiarizar_global(self):
+        # check se a img é em tons de cinza
+        if len(self.img1.shape) == 3:
+            self.img1 = convert_color_para_pb(self.img1)
+            self.display_on(self.img1, self.ui.imgFrame1)
+            
+        elif len(self.img1.shape)==2:
+            pass
+
+        else:
+            return
+        
+        # limiarizar
+        self.img3, thresh_obtido = limiarizacao_global(self.img1)
+        
+        self.current_widget_form.label_2.setText(str(int(thresh_obtido)))
+
+        # Exibir
+        self.display_on(self.img3, self.ui.imgFrame3)
+
+    def call_resultado_limiarizar_otsu(self):
+        # check se a img é em tons de cinza
+        if len(self.img1.shape) == 3:
+            self.img1 = convert_color_para_pb(self.img1)
+            self.display_on(self.img1, self.ui.imgFrame1)
+            
+        elif len(self.img1.shape)==2:
+            pass
+
+        else:
+            return
+        
+        # limiarizar
+        self.img3, thresh_obtido = segmentacao_global_otsu(self.img1)
+        
+        self.current_widget_form.label_2.setText(str(int(thresh_obtido)))
+
+        # Exibir
+        self.display_on(self.img3, self.ui.imgFrame3)
 
     ##################################################### 
-    ########## funções call_action    ###################
+    ############# funções call_action  ##################
     #####################################################
 
     def call_action_convert_tc(self):
@@ -600,7 +741,35 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.current_widget_form.pushButton.clicked.connect(
             self.call_resultado_kirsch)
 
+    def call_action_histograma(self):
+        self.put_current_widget(ui_histograma_widget)
+        self.current_widget_form.pushButton.clicked.connect(
+            self.call_resultado_histograma)
     
+    def call_action_equalizar(self):
+        self.put_current_widget(ui_equalizacao_histograma_widget)
+        self.current_widget_form.pushButton.clicked.connect(
+            self.call_resultado_equalizar)
+
+    def call_action_autoescala(self):
+        self.put_current_widget(ui_equalizacao_histograma_widget)
+        self.current_widget_form.pushButton.clicked.connect(
+            self.call_resultado_autoescala)
+
+    
+    def call_action_limiarizar_global(self):
+        self.put_current_widget(ui_limiarizar_widget)
+        self.current_widget_form.pushButton.clicked.connect(
+            self.call_resultado_limiarizar_global)
+
+    
+    def call_action_limarizar_otsu(self):
+        self.put_current_widget(ui_limiarizar_widget) 
+        self.current_widget_form.pushButton.clicked.connect(
+            self.call_resultado_limiarizar_otsu)
+    
+
+
     ################################################
     ############ outras funções ####################
     ################################################

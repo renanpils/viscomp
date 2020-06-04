@@ -15,7 +15,9 @@ import ui_files.ui_convert_bin_widget  as ui_convert_bin_widget
 import ui_files.ui_convert_grayscale_widget  as ui_convert_grayscale_widget
 import ui_files.ui_binary_operations_widget  as ui_binary_operations_widget
 import ui_files.ui_op_aritmeticas_widget  as ui_op_aritmeticas_widget
-
+import ui_files.ui_histograma_widget as ui_histograma_widget
+import ui_files.ui_equalizacao_histograma_widget as ui_equalizacao_histograma_widget
+import ui_files.ui_limiarizar_widget as ui_limiarizar_widget
 
 ''' Considerações finais:
 Comando para converter .ui para .pi:
