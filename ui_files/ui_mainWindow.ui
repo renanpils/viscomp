@@ -412,6 +412,7 @@
     <addaction name="actionMediana"/>
     <addaction name="actionPassa_Alta"/>
     <addaction name="actionLaplaciano"/>
+    <addaction name="actionGaussiano"/>
    </widget>
    <widget class="QMenu" name="menuMorfologia">
     <property name="title">
@@ -434,6 +435,7 @@
     </property>
     <addaction name="actionCaracter_sticas"/>
     <addaction name="actionSURF"/>
+    <addaction name="actionRuido"/>
    </widget>
    <addaction name="menuArquivo"/>
    <addaction name="menuConverter"/>
@@ -626,6 +628,16 @@
   <action name="actionMulti_limiarizar">
    <property name="text">
     <string>Multi limiarização</string>
+   </property>
+  </action>
+  <action name="actionGaussiano">
+   <property name="text">
+    <string>Gaussiano</string>
+   </property>
+  </action>
+  <action name="actionRuido">
+   <property name="text">
+    <string>Adicionar Ruido</string>
    </property>
   </action>
  </widget>

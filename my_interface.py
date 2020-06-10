@@ -19,16 +19,8 @@ import ui_files.ui_histograma_widget as ui_histograma_widget
 import ui_files.ui_equalizacao_histograma_widget as ui_equalizacao_histograma_widget
 import ui_files.ui_limiarizar_widget as ui_limiarizar_widget
 
-''' Considerações finais:
-Comando para converter .ui para .pi:
-
-pyuic5 -x ui-files/ui_mainWindow.ui -o ui_mainWindow.py
-pyuic5 -x ui-files/ui_template_widget.ui -o ui_template.py
-pyuic5 -x ui-files/ui_start_widget.ui -o ui_start_widget.py
-pyuic5 -x ui-files/ui_transformations_widget.ui -o ui_transformations_widget.py
-pyuic5 -x ui-files/ui_bordas_widget.ui -o ui_bordas_widget.py
-pyuic5 -x ui-files/ui_convert_bin_widget.ui -o ui_convert_bin_widget.py
-pyuic5 -x ui-files/ui_convert_grayscale_widget.ui -o ui_convert_grayscale_widget.py
-pyuic5 -x ui-files/ui_binary_operations_widget.ui -o ui_binary_operations_widget.py
-
-'''
+import ui_files.ui_gaussiano_widget as ui_gaussiano_widget
+import ui_files.ui_laplaciano_widget as ui_laplaciano_widget
+import ui_files.ui_media_widget as ui_media_widget
+import ui_files.ui_mediana_widget as ui_mediana_widget
+import ui_files.ui_passa_altas_widget as ui_passa_altas_widget

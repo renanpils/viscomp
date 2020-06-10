@@ -257,6 +257,10 @@ class Ui_MainWindow(object):
         self.actionFechamento.setObjectName("actionFechamento")
         self.actionMulti_limiarizar = QtWidgets.QAction(MainWindow)
         self.actionMulti_limiarizar.setObjectName("actionMulti_limiarizar")
+        self.actionGaussiano = QtWidgets.QAction(MainWindow)
+        self.actionGaussiano.setObjectName("actionGaussiano")
+        self.actionRuido = QtWidgets.QAction(MainWindow)
+        self.actionRuido.setObjectName("actionRuido")
         self.menuArquivo.addAction(self.actionAbrir_para_principal)
         self.menuArquivo.addAction(self.actionAbrir_para_auxiliar)
         self.menuArquivo.addAction(self.actionSalvar_resultado)
@@ -288,6 +292,7 @@ class Ui_MainWindow(object):
         self.menuFiltros.addAction(self.actionMediana)
         self.menuFiltros.addAction(self.actionPassa_Alta)
         self.menuFiltros.addAction(self.actionLaplaciano)
+        self.menuFiltros.addAction(self.actionGaussiano)
         self.menuMorfologia.addAction(self.actionDilatar)
         self.menuMorfologia.addAction(self.actionErodir)
         self.menuMorfologia.addAction(self.actionAbretura)
@@ -295,6 +300,7 @@ class Ui_MainWindow(object):
         self.menuSegmenta_o.addAction(self.actionMulti_limiarizar)
         self.menuMais.addAction(self.actionCaracter_sticas)
         self.menuMais.addAction(self.actionSURF)
+        self.menuMais.addAction(self.actionRuido)
         self.menubar.addAction(self.menuArquivo.menuAction())
         self.menubar.addAction(self.menuConverter.menuAction())
         self.menubar.addAction(self.menuTransformar.menuAction())
@@ -372,6 +378,8 @@ class Ui_MainWindow(object):
         self.actionAbretura.setText(_translate("MainWindow", "Abretura"))
         self.actionFechamento.setText(_translate("MainWindow", "Fechamento"))
         self.actionMulti_limiarizar.setText(_translate("MainWindow", "Multi limiarização"))
+        self.actionGaussiano.setText(_translate("MainWindow", "Gaussiano"))
+        self.actionRuido.setText(_translate("MainWindow", "Adicionar Ruido"))
 
 
 if __name__ == "__main__":

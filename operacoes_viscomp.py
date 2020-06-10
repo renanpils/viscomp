@@ -36,7 +36,6 @@ def abrir_img(path):
     return cv2.imread(path, cv2.IMREAD_COLOR)
     
 
-
 def normalize_uint8(img):
     '''
     Função para normalizar a imagem. 
@@ -655,14 +654,6 @@ def kirsch(A:np.ndarray):
 
 ########################## FIXME
 
-def kernel_gaussiano(size, sigma=1):
-    size = int(size) // 2
-    x, y = np.meshgrid(range(-size,size+1), range(-size,size+1))
-    normal = 1 / (2.0 * np.pi * sigma**2)
-    g =  np.exp(-((x**2 + y**2) / (2.0*sigma**2))) * normal
-    return g
-
-
 def canny(img:np.ndarray, thresh=127, sigma=1):
     pass
 
@@ -725,6 +716,7 @@ def equalizacao_histogramas(img: np.ndarray):
     
     return img_res
 
+
 def transformacao_intensidade(img: np.ndarray, 
                                 f =31.875 * np.log2(np.arange(256) + 1)):
     '''
@@ -740,7 +732,8 @@ def transformacao_intensidade(img: np.ndarray,
     img_res = np.uint8(np.take(f, img))
 
     return img_res
-    
+
+
 def autoescala(img:np.ndarray):
     
     # Encontrar o máx.
@@ -850,3 +843,204 @@ def segmentacao_global_otsu(img:np.ndarray):
 
     return (np.uint8(255*(img>= int(k_max))) ,int(k_max))
 
+
+def aplica_mascara_2(img:np.ndarray, mask: np.ndarray):
+    '''
+    img - Imagem a ser aplicada a máscara (apenas 1 canal de 8 bits)
+    mask - mascara
+
+    => nessa implementação, não são deixadas bordas com valor nulo. a imagem é expandida
+        com zeros e filtrada, de modo que os pixels das bordas são resultados da filtragem
+         também.
+    
+    retorna: imagem resultado da convolução da mascara. sem normalização.
+
+    '''
+
+    # Parâmetros do tamanho da mascara
+    m = mask.shape[0]//2 ; k = mask.shape[0]
+    n = mask.shape[1]//2 ; l = mask.shape[1]
+
+    # Parâmetros do tamanho da imagem
+    w = img.shape[1]
+    h = img.shape[0]
+
+    # reshape image:
+
+    # Alocar o espaço para nova imagem
+    imgRes = np.zeros((h+2*m, w+2*n))
+
+    imgOrgAdj = np.zeros((h+2*m, w+2*n))
+
+    imgOrgAdj[m:(m+img.shape[0]), n:(img.shape[1]+n)] = img[:, :]
+
+    # Parâmetros do tamanho da imagem
+    w = imgOrgAdj.shape[1]
+    h = imgOrgAdj.shape[0]
+
+    # Método rápido: n iterações é o n de elementos na mascara
+    for i in range(k):
+        for j in range(l):
+            imgRes[m:(h-m),n:(w-n)] += mask[i,j] * imgOrgAdj[i:(h-(k-i)+1), j:(w-(l-j)+1)]
+
+    return imgRes[m:(img.shape[0]+m), n:(img.shape[1]+n)]
+
+
+class masks():
+    def __init__(self):
+        pass
+    
+    @staticmethod
+    def media(n):
+        '''
+        retorna uma mascara de média (n,n)
+        '''
+        return (1/(n*n))*np.ones((n,n))
+
+    @staticmethod
+    def gaussiano(n, sigma=1):
+        '''
+        retorna uma mascara gaussiana (n,n) de desvio sigma.
+        '''
+        size = int(n) // 2
+        x, y = np.meshgrid(np.arange(-size,size+1), np.arange(-size,size+1))
+        normal = 1 / (2.0 * np.pi * sigma**2)
+        g =  np.exp(-((x**2 + y**2) / (2.0*sigma**2))) * normal
+        return g
+
+    @staticmethod
+    def laplaciano(n=5):
+        '''
+        n = 3, 5 ou  9
+        se nada, retorna o mesmo para n=5
+        '''
+
+        if n== 3:
+            return np.array([[0, -1, 0], [-1, 4, -1], [0, -1, 0]])
+
+        elif n==5:
+            m = -1*np.ones((5,5))
+            m[2,2] = 24
+            return m
+        
+        elif n==9:
+            m = -1*np.ones((9,9))
+            m[3:6,3:6] = 8
+            return m
+        else:
+            m = -1*np.ones((5,5))
+            m[2,2] = 24
+            return m
+
+    @staticmethod
+    def passa_altas(n=5):
+        '''
+        retorna uma mascara passa altas (n,n)
+        '''
+        if n%2 == 0:
+            n = n + 1
+        elif n<3:
+            n = 3
+        
+        mascara = (-1) * np.ones((n,n))
+        mascara[n//2, n//2] = (-1) * np.sum(mascara) - 1
+
+        return mascara
+
+
+def adicionar_ruido(img:np.ndarray, tipo= 'uniforme', quantidade= 0.15, amplitude = 30):
+    '''
+    adiciona ruido na imagem.
+    img = img + amplitude * ruido
+    quantidade: percentual de pontos da imagem que serão afetados pelo ruido
+    (em decimal)
+    tipo: 'uniforme' ou 'gaussiano'
+
+    '''
+    # Com auxilio da distribuição uniforme vamos fazer com que apenas uma parte
+    # seja diferente de zero.
+    ruido = 1 * (np.random.rand(img.shape[0],img.shape[1]) < quantidade)
+
+    # Caso seja uniforme rand nos dá numeros uniformemente distribuidos
+    if tipo == 'uniforme':
+        ruido = np.multiply(ruido, 2* np.random.rand(img.shape[0],img.shape[1]) - 1)
+    
+    # Caso seja gaussiano randn nos dá numeros distribuidos normalmente
+    elif tipo == 'gaussiano':
+        ruido = np.multiply(ruido,    np.random.randn(img.shape[0],img.shape[1]) )
+    
+    # Por default retorna uniforme
+    else:
+        #  2*rand -1 força os números aleatórios a saírem entre -1 e 1
+        ruido = np.multiply(ruido, 2* np.random.rand(img.shape[0],img.shape[1])-1)
+    
+    # Força todos os numeros a ficarem dentro de 0 a 255, sem normalizá-los.
+    return clip_uint8(img + amplitude*ruido)
+
+
+def pseudomediana(A:np.ndarray):
+    '''
+    Encontra a pseudomediana para um vetor
+    '''
+    
+    L = A.size
+    M = (L+1)//2
+
+    mmx_counter = 0
+    mins = np.zeros(M)
+    maxs = np.zeros(M)
+
+    for p in range(L-M+1):
+        mmx_array = A[p:(p+M)]
+        mins[mmx_counter] = np.min(mmx_array)
+        maxs[mmx_counter] = np.max(mmx_array)
+        mmx_counter+=1
+
+    maxmin = np.max(mins)
+    minmax = np.min(maxs)
+
+    pmediana = int((maxmin+minmax)//2)
+
+    return pmediana
+
+
+def filtro_pseudomediana(img:np.ndarray, tamanho= 3):
+
+    # Expandir as bordas para aplicar a mascara às bordas tb.
+
+    # Parâmetros do tamanho da mascara
+    m = tamanho//2 ; k = tamanho
+    n = tamanho//2 ; l = tamanho
+
+    # Parâmetros do tamanho da imagem
+    w = img.shape[1]
+    h = img.shape[0]
+
+    # reshape image:
+
+    # Alocar o espaço para nova imagem (Expandir a borda para que o centro da 
+    # mascara comece no primeiro elemento da imagem)
+    imgRes = np.zeros((h+2*m, w+2*n))
+    imgAdj = np.zeros((h+2*m, w+2*n))
+    imgAdj[m:(m+img.shape[0]), n:(img.shape[1]+n)] = img[:, :]
+
+    # Parâmetros do tamanho da imagem nova imagem ajustada
+    w = imgAdj.shape[1]
+    h = imgAdj.shape[0]
+
+    # Aplicar a pseudomediana:
+    '''
+    PMED = MAXMIN(S_L) + MINMAX(S_L)
+    '''
+    L = tamanho**tamanho
+    M = (tamanho+1)//2
+
+    # Loop por todos os elementos da imagem ajustada
+    for i in range(m, h-m):
+        for j in range(n, w-n):
+            # encontrar a pseudomediana e atribuir a i, j na imagem resultante
+            imgRes[i,j] = pseudomediana(
+                    imgAdj[(i-m):(i+m+1), (j-m):(j+n+1)].flatten())
+
+        
+    return imgRes[m:(img.shape[0]+m), n:(img.shape[1]+n)]

@@ -2,6 +2,8 @@
 
 echo "Refreshing all ui's"
 
+:: Gerando ou atualizando .py's . . ."
+
 pyuic5 -x ui_files/ui_mainWindow.ui -o ui_files/ui_mainWindow.py
 pyuic5 -x ui_files/ui_template_widget.ui -o ui_files/ui_template.py
 pyuic5 -x ui_files/ui_start_widget.ui -o ui_files/ui_start_widget.py
@@ -16,4 +18,11 @@ pyuic5 -x ui_files/ui_histograma_widget.ui -o ui_files/ui_histograma_widget.py
 pyuic5 -x ui_files/ui_equalizacao_histograma_widget.ui -o ui_files/ui_equalizacao_histograma_widget.py
 pyuic5 -x ui_files/ui_limiarizar_widget.ui -o ui_files/ui_limiarizar_widget.py
 
+pyuic5 -x ui_files/ui_gaussiano_widget.ui -o ui_files/ui_gaussiano_widget.py
+pyuic5 -x ui_files/ui_laplaciano_widget.ui -o ui_files/ui_laplaciano_widget.py
+pyuic5 -x ui_files/ui_media_widget.ui -o ui_files/ui_media_widget.py
+pyuic5 -x ui_files/ui_mediana_widget.ui -o ui_files/ui_mediana_widget.py
+pyuic5 -x ui_files/ui_passa_altas_widget.ui -o ui_files/ui_passa_altas_widget.py
+
 echo "Done! "
+pause

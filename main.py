@@ -144,10 +144,13 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.ui.actionLimiarizar_Otsu.triggered.connect(self.call_action_limarizar_otsu)
 
         # # filtros:
-        # self.ui.action.triggered.connect(self.call_action_)
-        # self.ui.action.triggered.connect(self.call_action_)
-        # self.ui.action.triggered.connect(self.call_action_)
-        # self.ui.action.triggered.connect(self.call_action_)
+        self.ui.actionLaplaciano.triggered.connect(self.call_action_laplaciano)
+        self.ui.actionGaussiano.triggered.connect(self.call_action_gaussiano)
+        self.ui.actionMedia.triggered.connect(self.call_action_media)
+        self.ui.actionMediana.triggered.connect(self.call_action_mediana)
+        self.ui.actionMediana.triggered.connect(self.call_action_mediana)
+        self.ui.actionPassa_Alta.triggered.connect(self.call_action_passa_altas)
+            
         # # Morfologia:
         # self.ui.action.triggered.connect(self.call_action_)
         # self.ui.action.triggered.connect(self.call_action_)
@@ -649,6 +652,146 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         # Exibir
         self.display_on(self.img3, self.ui.imgFrame3)
 
+    def call_resultado_passa_altas(self):
+        # check se a img é em tons de cinza
+        if len(self.img1.shape) == 3:
+            self.img1 = convert_color_para_pb(self.img1)
+            self.display_on(self.img1, self.ui.imgFrame1)
+            
+        elif len(self.img1.shape)==2:
+            pass
+
+        else:
+            return
+        
+        # Coletar o valor de n
+        n = self.get_number_whithout_error(self.current_widget_form.lineEdit.text(),'int')
+        
+        # Definir a mascara que vai ser usada
+        mascara = masks.passa_altas(n, sigma)
+        
+        # aplicara a mascara
+        self.img3 = aplica_mascara_2(self.img1, mascara)
+
+        # normalizar
+        self.img3 = normalize_uint8(self.img3)
+
+        # mostrar na img 3.
+        self.display_on(self.img3, self.ui.imgFrame3)
+
+
+    #TODO
+    def call_resultado_laplaciano(self):
+        # check se a img é em tons de cinza
+        if len(self.img1.shape) == 3:
+            self.img1 = convert_color_para_pb(self.img1)
+            self.display_on(self.img1, self.ui.imgFrame1)
+            
+        elif len(self.img1.shape)==2:
+            pass
+
+        else:
+            return
+        
+        # Coletar o valor de n
+        n = self.get_number_whithout_error(self.current_widget_form.lineEdit.text(),'int')
+        
+        # Definir a mascara que vai ser usada
+        mascara = masks.laplaciano(n)
+        
+        # aplicara a mascara
+        self.img3 = aplica_mascara_2(self.img1, mascara)
+
+        # normalizar
+        self.img3 = normalize_uint8(self.img3)
+
+        # mostrar na img 3.
+        self.display_on(self.img3, self.ui.imgFrame3)
+
+    def call_resultado_media(self):
+        print('media')
+        # check se a img é em tons de cinza
+        if len(self.img1.shape) == 3:
+            self.img1 = convert_color_para_pb(self.img1)
+            self.display_on(self.img1, self.ui.imgFrame1)
+            
+        elif len(self.img1.shape)==2:
+            pass
+
+        else:
+            return
+        
+        # Coletar o valor de n
+        n = self.get_number_whithout_error(self.current_widget_form.lineEdit.text(),'int')
+        
+        # Definir a mascara que vai ser usada
+        mascara = masks.media(n)
+        
+        # aplicara a mascara
+        self.img3 = aplica_mascara_2(self.img1, mascara)
+        
+        # normalizar
+        self.img3 = normalize_uint8(self.img3)
+
+        # mostrar na img 3.
+        self.display_on(self.img3, self.ui.imgFrame3)
+        
+    # TODO
+    def call_resultado_mediana(self):
+        # check se a img é em tons de cinza
+        if len(self.img1.shape) == 3:
+            self.img1 = convert_color_para_pb(self.img1)
+            self.display_on(self.img1, self.ui.imgFrame1)
+            
+        elif len(self.img1.shape)==2:
+            pass
+
+        else:
+            return
+        
+        # Coletar o valor de n
+        n = self.get_number_whithout_error(self.current_widget_form.lineEdit.text(),'int')
+        
+        # aplicara filtro
+        self.img3 = filtro_pseudomediana(self.img1, n)
+        
+        # normalizar
+        self.img3 = clip_uint8(self.img3)
+
+        # mostrar na img 3.
+        self.display_on(self.img3, self.ui.imgFrame3)
+
+
+    def call_resultado_gaussiano(self):
+        # check se a img é em tons de cinza
+        if len(self.img1.shape) == 3:
+            self.img1 = convert_color_para_pb(self.img1)
+            self.display_on(self.img1, self.ui.imgFrame1)
+            
+        elif len(self.img1.shape)==2:
+            pass
+
+        else:
+            return
+        
+        # Coletar o valor de n
+        n = self.get_number_whithout_error(self.current_widget_form.lineEdit.text(),'int')
+        sigma = self.get_number_whithout_error(self.current_widget_form.lineEdit_2.text(),'float')
+        
+        # Definir a mascara que vai ser usada
+        mascara = masks.gaussiano(n, sigma)
+        
+        # aplicara a mascara
+        self.img3 = aplica_mascara_2(self.img1, mascara)
+
+        # normalizar
+        self.img3 = normalize_uint8(self.img3)
+
+        # mostrar na img 3.
+        self.display_on(self.img3, self.ui.imgFrame3)
+        
+
+
     ##################################################### 
     ############# funções call_action  ##################
     #####################################################
@@ -768,8 +911,30 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.current_widget_form.pushButton.clicked.connect(
             self.call_resultado_limiarizar_otsu)
     
+    def call_action_laplaciano(self):
+        self.put_current_widget(ui_laplaciano_widget) 
+        self.current_widget_form.pushButton.clicked.connect(
+            self.call_resultado_laplaciano)
 
+    def call_action_media(self):
+        self.put_current_widget(ui_media_widget) 
+        self.current_widget_form.pushButton.clicked.connect(
+            self.call_resultado_media)
 
+    def call_action_mediana(self):
+        self.put_current_widget(ui_mediana_widget) 
+        self.current_widget_form.pushButton.clicked.connect(
+            self.call_resultado_mediana)
+
+    def call_action_gaussiano(self):
+        self.put_current_widget(ui_gaussiano_widget) 
+        self.current_widget_form.pushButton.clicked.connect(
+            self.call_resultado_gaussiano)
+    
+    def call_action_passa_altas(self):
+        self.put_current_widget(ui_passa_altas_widget) 
+        self.current_widget_form.pushButton.clicked.connect(
+            self.call_resultado_passa_altas)
 
     ################################################
     ############ outras funções ####################
