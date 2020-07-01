@@ -1044,3 +1044,367 @@ def filtro_pseudomediana(img:np.ndarray, tamanho= 3):
 
         
     return imgRes[m:(img.shape[0]+m), n:(img.shape[1]+n)]
+
+
+def dilatar(img:np.ndarray,element:np.ndarray, center= (0,0), limiar = 0):
+    '''
+    Dilatação de elementos maiores que limiar.
+    retorna matriz de booleans
+    '''
+    # Converter para binarios (booleanos)
+    img_bool = img>limiar
+    element_bool = element>limiar
+
+    # Parâmetros do tamanho da mascara
+    m = element.shape[0]//2 ; k = element.shape[0]
+    n = element.shape[1]//2 ; l = element.shape[1]
+
+    # Parâmetros do tamanho da imagem
+    w = img.shape[1]
+    h = img.shape[0]
+
+    # reshape image:
+
+    # Alocar o espaço para nova imagem
+    imgRes = np.zeros((h+2*m, w+2*n))
+
+    imgOrgAdj = np.zeros((h+2*m, w+2*n))
+
+    imgOrgAdj[m:(m+img.shape[0]), n:(img.shape[1]+n)] = img[:, :]
+
+    # Parâmetros do tamanho da imagem
+    w = imgOrgAdj.shape[1]
+    h = imgOrgAdj.shape[0]
+
+    #FIXME: Problema quando o elemento tem alguma dimensão par
+    for i in range (m, h-m):
+        for j in range(n, w-n):
+            # Se tiver um pixel marcado na imagem (descontando o centro da mascar
+            # que pode ser escohido pelo usuário)
+            if (imgOrgAdj[i-center[0],j-center[1]]):
+                imgRes[(i-m):(i-m+k), (j-n):(j-n+l)] = \
+                    np.logical_or(
+                        imgRes[(i-m):(i-m+k), (j-n):(j-n+l)], 
+                        element)
+
+
+    return imgRes[m:(img.shape[0]+m), n:(img.shape[1]+n)]
+
+
+def erodir(img:np.ndarray,element:np.ndarray, center= (0,0), limiar = 0):
+    '''
+    Erosão de elementos maiores que limiar.
+    retorna matriz de booleans
+    '''
+    # Converter para binarios (booleanos)
+    img_bool = img>limiar
+    element_bool = element>limiar
+
+        # Parâmetros do tamanho da mascara
+    m = element.shape[0]//2 ; k = element.shape[0]
+    n = element.shape[1]//2 ; l = element.shape[1]
+
+    # Parâmetros do tamanho da imagem
+    w = img.shape[1]
+    h = img.shape[0]
+
+    # reshape image:
+
+    # Alocar o espaço para nova imagem
+    imgRes = np.zeros((h+2*m, w+2*n))
+
+    imgOrgAdj = np.zeros((h+2*m, w+2*n))
+
+    imgOrgAdj[m:(m+img.shape[0]), n:(img.shape[1]+n)] = img[:, :]
+
+    # Parâmetros do tamanho da imagem
+    w = imgOrgAdj.shape[1]
+    h = imgOrgAdj.shape[0]
+
+    #FIXME: Problema quando o elemento tem alguma dimensão par
+    for i in range (m, h-m):
+        for j in range(n, w-n):
+            imgRes[i-m+center[0],j-n+center[1]] = \
+                np.all(np.logical_and(imgOrgAdj[(i-m):(i-m+k), (j-n):(j-n+l)], element))
+
+
+    return imgRes[m:(img.shape[0]+m), n:(img.shape[1]+n)]
+
+
+def abertura(img:np.ndarray, elem:np.ndarray, centro= (0,0), limiar=0):
+    imgRes = 255*erodir(img, 1 * np.logical_not(elem), centro, limiar=limiar)
+    imgRes = dilatar(img, elem, centro, limiar=limiar)
+    
+    return imgRes
+
+
+def fechamento(img:np.ndarray, elem:np.ndarray, centro= (0,0), limiar=0):
+    imgRes = 255*dilatar(img, 1 * np.logical_not(elem), centro, limiar=limiar)
+    imgRes = erodir(img, elem, centro, limiar=limiar)
+    
+    return imgRes
+
+
+def segmentacao_a_la_eduardo(img_in:np.ndarray, limiar=0):
+    '''
+    recebe a imagem limiarizada
+
+    retorna: imagem segmentada, numero de elementos
+    '''
+    # Expandir a imagem para eliminar os problemas de indices em bordas
+    img = np.zeros((img_in.shape[0]+2, img_in.shape[1]+2))
+    imgRes = np.zeros(img.shape,dtype='int')
+    # Colocar a img no espaço alocado
+    img[1:-1, 1:-1] = img_in
+
+    # inicalizar os contadores de regiões
+    region_counter = 0
+    current_counter = 0
+
+    # Escanear elemento a elemento:
+    for i in range(1, img.shape[0]-1):
+        for j in range(1, img.shape[1]-1):
+            
+            # Se for um pixel marcado:
+            if img[i, j]:
+                
+                # Verificar se já há marcação adjacente
+                if (imgRes[i-1,j] or imgRes[i, j-1]):
+                
+                    # se for o pixel de cima que estiver marcado:
+                    if imgRes[i-1,j]:
+                        current_counter = imgRes[i-1,j]
+
+                    # se o pixel anterior que estiver marcado:
+                    elif imgRes[i, j-1]:
+                        current_counter = imgRes[i,j-1]
+                    
+                    # Marcar o que tiver que marcar
+                    imgRes[i-1, j] = current_counter if (imgRes[i-1, j]) else imgRes[i-1, j]
+                    imgRes[i, j-1] = current_counter if (imgRes[i, j-1]) else imgRes[i, j-1]
+                    imgRes[i,j]    = current_counter
+
+                else:
+                    # Incrementaro o contador de regiões e assumir que é uma região nova
+                    region_counter += 1
+                    current_counter = region_counter
+
+                    # Marcar como uma nova região
+                    imgRes[i,j] = current_counter
+                    
+                    # Marcar o que tiver que marcar à direita e abaixo
+                    imgRes[i+1, j] = current_counter if imgRes[i+1, j] else imgRes[i+1, j]
+                    imgRes[i, j+1] = current_counter if imgRes[i, j+1] else imgRes[i, j+1]
+
+
+    # Verificar por regiões onde há conflitos de regiões:
+    # Escanear elemento a elemento:
+    for i in range(img.shape[0]-1, 0, -1 ):
+        for j in range(img.shape[1]-1, 0, -1):
+            # Caso seja marcado
+            if imgRes[i, j]:
+
+                # Se o superior estiver ativo e for diferente 
+                if imgRes[i-1, j] and imgRes[i-1, j]!= imgRes[i, j]:
+                    imgRes[i-1, j] = imgRes[i, j]
+
+                # Se o anterior estiver ativo e for diferente 
+                if imgRes[i, j-1] and imgRes[i, j-1]!= imgRes[i, j]:
+                    imgRes[i, j-1] = imgRes[i, j]
+
+    # Reorganizar as regiões
+    vals = list(range(1,region_counter+1))
+    h    = list(np.zeros(len(vals)))
+    
+    # criar um histograma
+    for i, val in enumerate(vals):
+        h[i] = np.sum(imgRes == val)
+
+    # Caso haja algum zero: corrigir
+    if not np.all(h):
+        for i in range(len(vals)):
+            if h[i] == 0:
+                h[i]    =-1
+                vals[i] =-1
+        
+        # Excluir os zeros
+        while(True):
+            try:
+                h.remove(-1)
+            except:
+                break
+
+        while(True):
+            try:
+                vals.remove(-1)
+            except:
+                break    
+        
+        #refazer o histograma:
+        vals_novos = np.arange(1,len(vals)+1)
+        
+        for val_antigo, val_novo in zip(vals, vals_novos):
+            imgRes[imgRes== val_antigo] = val_novo
+
+        n_regions = vals_novos[-1]
+
+    return imgRes[1:-1, 1:-1], n_regions
+
+
+def posicao(img:np.ndarray, value= 1):
+    '''
+    retorna a posição e a área de um objeto com valor == value
+    na img segmentada.
+
+    return x, y, area
+    '''
+    # Meshgrid para facilitar no calculo das médias.
+    xx, yy = np.meshgrid(range(img.shape[1]), range(img.shape[0]))
+
+    # print('xx')
+    # print(xx)
+    # print('yy')
+    # print(yy)
+
+    # Calcular a área do obj
+    ar = calcular_area(img, 1)
+    # Encontrar onde ele esta na img
+    cond = img == value
+    # Calcular a média horizontal
+    x_ = int(np.round( np.sum(xx[cond]) / ar))
+    # Calcular a media vertical
+    y_ = int(np.round( np.sum(yy[cond]) / ar))
+
+    return x_, y_, ar
+
+
+def orientacao(img:np.ndarray, value= 1):
+    '''
+    retorna a posição, orientação em graus e a área de um objeto com valor == value
+    na img segmentada.
+
+    return x, y, theta, area
+    '''
+
+    # Meshgrid para facilitar no calculo das médias.
+    xx, yy = np.meshgrid(range(img.shape[1]), range(img.shape[0]))
+
+    # Calcular a área do obj
+    ar = calcular_area(img, value)
+    # Encontrar onde ele esta na img
+    cond = img == value
+    # Calcular a média horizontal
+    x_ = int(np.round( np.sum(xx[cond]) / ar))
+    # Calcular a media vertical
+    y_ = int(np.round( np.sum(yy[cond]) / ar))
+
+
+    #
+    x_linha = np.multiply((xx - x_), 1 * cond)
+    y_linha = np.multiply((yy - y_), 1 * cond)
+
+    # a
+    a = np.sum(x_linha**2)
+
+    # b
+    b = 2 * np.sum( np.multiply(x_linha, y_linha) )
+
+    # c
+    c = np.sum(y_linha**2)
+
+    # Calcular o ângulo em rad.
+    theta = - np.arctan2(b , (a-c)) / 2
+
+    # Converter para graus:
+    theta = np.round(180 * theta / np.pi, decimals = 1)
+    #print('theta = ', 180 * theta / np.pi)
+
+    return x_, y_, theta, ar 
+
+
+def calcular_area(img:np.ndarray, value = 1):
+    return np.sum(img == value)
+
+
+def comprimento_e_largura(img_in:np.ndarray, value):
+    '''
+    retorna a posição, orientação em graus e a área de um objeto com valor == value
+    na img segmentada.
+
+    TODO: Atualizar lista de saidas
+    '''
+    # Calcular a área do obj
+    ar = calcular_area(img_in, value)
+
+    # Meshgrid para facilitar no calculo das médias.
+    xx, yy = np.meshgrid(range(img_in.shape[1]), range(img_in.shape[0]))
+
+    # Encontrar onde ele esta na img. cond contém a info. lógica de quais pixels dessa img são
+    # do objeto. será bastante util durante esse algoritmo para controlar bugs.
+    cond = img_in==value
+
+    # filtrar o meshgrid
+    xs = xx[cond]
+    ys = yy[cond]
+
+    # Encontrar a janela quardada em que o objeto se localiza
+    x_max = np.max(xs); x_min = np.min(xs)
+    y_max = np.max(ys); y_min = np.min(ys)
+    
+    # Calcular a largura da janela quadrada do obj. 
+    dx = x_max - x_min + 1
+    dy = y_max - y_min + 1 
+    
+
+    # Calcular a média horizontal
+    x_ = int(np.round( np.sum(xs) / ar))
+    # Calcular a media vertical
+    y_ = int(np.round( np.sum(ys) / ar))
+
+    # Diferença entre cada ponto pertencente ao obj ao centro da img
+    x_linha = np.multiply((xx - x_), 1 * cond)
+    y_linha = np.multiply((yy - y_), 1 * cond)
+
+    # a
+    a = np.sum(x_linha**2)
+
+    # b
+    b = 2 * np.sum( np.multiply(x_linha, y_linha) )
+
+    # c
+    c = np.sum(y_linha**2)
+
+    # Calcular o ângulo de orientação em rad.
+    theta = - np.arctan2(b , (a-c)) / 2
+
+    # Calcular utilizando as propriedades de projeção de vetores. Projetar um vetor(x - x_medio, y- y_medio)
+    # na direção da orientação do elemento
+    proj_comprimento = x_linha * np.cos(theta) + y_linha*np.sin(theta)
+    proj_largura     = x_linha * (- np.sin(theta)) + y_linha * np.cos(theta)
+
+    # theta para graus:
+    theta = 180 * theta / np.pi
+
+    # Calcular as projeções
+    h = int(np.round(np.max(proj_comprimento) - np.min(proj_comprimento) + 1))
+    w = int(np.round(np.max(proj_largura    ) - np.min(proj_largura    ) + 1))
+
+    return x_, y_, theta, w, h, ar, dx, dy, (x_min, y_min), (x_max, y_max)
+
+
+def limiarizacao_por_bordas(img: np.ndarray, limiar_bordas = 127):
+    '''
+    Retorna um limiar obtido pela média dos pixels de borda 
+    acima de 127 (sendo os pixels da borda normalizados entre 0 e 255)
+
+    img possui apenas um canal.
+    '''
+    # Extrair as bordas da img usando sobel.
+    bordas = sobel(img, normalizado= True) # entre 0 e 255
+
+    # Thresh = média dos pixels selecionados de borda
+    thresh = np.sum(img[bordas>limiar_bordas]) / np.sum(bordas>limiar_bordas)
+    
+    return thresh
+
+

@@ -24,5 +24,8 @@ pyuic5 -x ui_files/ui_media_widget.ui -o ui_files/ui_media_widget.py
 pyuic5 -x ui_files/ui_mediana_widget.ui -o ui_files/ui_mediana_widget.py
 pyuic5 -x ui_files/ui_passa_altas_widget.ui -o ui_files/ui_passa_altas_widget.py
 
+pyuic5 -x ui_files/ui_dilatacao_erosao_widget.ui -o ui_files/ui_dilatacao_erosao_widget.py
+::pyuic5 -x ui_files/ui_erosao_widget.ui -o ui_files/ui_erosao_widget.py
+pyuic5 -x ui_files/ui_extracao_widget.ui -o ui_files/ui_extracao_widget.py
 echo "Done! "
 pause

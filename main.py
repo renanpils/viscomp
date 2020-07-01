@@ -107,6 +107,9 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.img1 = np.array([0])
         self.img2 = np.array([0])
         self.img3 = np.array([0])
+
+        #inicializad dict
+        self.user_data_buffer = {'':[]}
         
 
     def menu_setup(self):
@@ -152,10 +155,13 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.ui.actionPassa_Alta.triggered.connect(self.call_action_passa_altas)
             
         # # Morfologia:
-        # self.ui.action.triggered.connect(self.call_action_)
-        # self.ui.action.triggered.connect(self.call_action_)
-        # self.ui.action.triggered.connect(self.call_action_)
-        # self.ui.action.triggered.connect(self.call_action_)
+        self.ui.actionDilatar.triggered.connect(self.call_action_dilatacao)
+        self.ui.actionErodir.triggered.connect(self.call_action_erosao)
+        self.ui.actionAbretura.triggered.connect(self.call_action_abertura)
+        self.ui.actionFechamento.triggered.connect(self.call_action_fechamento)
+
+        # Extração e segmentação
+        self.ui.actionCaracteristicas.triggered.connect(self.call_action_extracao_caracteristicas)
 
     def put_current_widget(self, ui_widget):
         '''colocar um widget referente a uma função na tela'''
@@ -735,8 +741,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
 
         # mostrar na img 3.
         self.display_on(self.img3, self.ui.imgFrame3)
-        
-    # TODO
+
     def call_resultado_mediana(self):
         # check se a img é em tons de cinza
         if len(self.img1.shape) == 3:
@@ -790,7 +795,304 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         # mostrar na img 3.
         self.display_on(self.img3, self.ui.imgFrame3)
         
+   
+    def call_resultado_dilatacao(self):
+        
 
+        # Receber as informações do usuário.
+
+        #Receber a string que o usuario entrou no plainTextEdit
+        user_input = self.current_widget_form.plainTextEdit.toPlainText()
+        user_input = user_input.replace('\n', '')
+        user_input = user_input.replace(' ', '')
+        
+        # Tentar executar o elemento estrturante inputado pelo usuário.
+        try:
+            elem = eval('np.array(' + user_input + ')')
+        except:
+            self.exibe_janela_aviso('Expressão inválida. Por favor, siga o modelo!')
+            # Para a função.
+            return       
+        
+        thresh = self.get_number_whithout_error(self.current_widget_form.lineEdit_limiar.text(), 'int')
+
+
+        elem_center_x = self.get_number_whithout_error(self.current_widget_form.lineEdit_x.text(), 'int')
+        elem_center_y = self.get_number_whithout_error(self.current_widget_form.lineEdit_y.text(), 'int')
+
+        # Checar se o centro está dentro do tamanho do elemento:
+        try:
+            if elem_center_y>(elem.shape[1]-1) or elem_center_x>(elem.shape[0]-1):
+                self.exibe_janela_aviso('Valores do centro não coerentes.')
+                return
+        
+        except:
+            self.exibe_janela_aviso('Erro no elemento estruturante.')
+            return
+             
+        # check se a img é em tons de cinza
+        if len(self.img1.shape) == 3:
+            self.img1 = convert_color_para_pb(self.img1)
+            self.display_on(self.img1, self.ui.imgFrame1)
+            
+        elif len(self.img1.shape)==2:
+            pass
+
+        else:
+            return
+        
+        # Desativar o botão
+        self.current_widget_form.pushButton.setEnabled(False)
+
+        self.img3 = dilatar(self.img1, elem, (elem_center_x, elem_center_y))
+
+        # normalizar
+        self.img3 = normalize_uint8(255 * self.img3)
+
+        # mostrar na img 3.
+        self.display_on(self.img3, self.ui.imgFrame3)
+
+        self.current_widget_form.pushButton.setEnabled(True)
+
+   
+    def call_resultado_erosao(self):
+
+        # Receber as informações do usuário.
+
+        #Receber a string que o usuario entrou no plainTextEdit
+        user_input = self.current_widget_form.plainTextEdit.toPlainText()
+        user_input = user_input.replace('\n', '')
+        user_input = user_input.replace(' ', '')
+        
+        # Tentar executar o elemento estrturante inputado pelo usuário.
+        try:
+            elem = eval('np.array(' + user_input + ')')
+        except:
+            self.exibe_janela_aviso('Expressão inválida. Por favor, siga o modelo!')
+            # Para a função.
+            return       
+        
+        thresh = self.get_number_whithout_error(self.current_widget_form.lineEdit_limiar.text(), 'int')
+
+
+        elem_center_x = self.get_number_whithout_error(self.current_widget_form.lineEdit_x.text(), 'int')
+        elem_center_y = self.get_number_whithout_error(self.current_widget_form.lineEdit_y.text(), 'int')
+
+        # Checar se o centro está dentro do tamanho do elemento:
+        try:
+            if elem_center_y>(elem.shape[1]-1) or elem_center_x>(elem.shape[0]-1):
+                self.exibe_janela_aviso('Valores do centro não coerentes.')
+                return
+        
+        except:
+            self.exibe_janela_aviso('Erro no elemento estruturante.')
+            return
+         
+        # check se a img é em tons de cinza
+        if len(self.img1.shape) == 3:
+            self.img1 = convert_color_para_pb(self.img1)
+            self.display_on(self.img1, self.ui.imgFrame1)
+            
+        elif len(self.img1.shape)==2:
+            pass
+
+        else:
+            return
+
+        # Desativar o botão
+        self.current_widget_form.pushButton.setEnabled(False)
+
+        # Realizar operação
+        self.img3 = erodir(self.img1, elem, (elem_center_x, elem_center_y))
+
+        # normalizar
+        self.img3 = normalize_uint8(255 * self.img3)
+
+        # mostrar na img 3.
+        self.display_on(self.img3, self.ui.imgFrame3)
+
+        self.current_widget_form.pushButton.setEnabled(True)
+    
+    def call_resultado_abertura(self):
+
+        # Receber as informações do usuário.
+
+        #Receber a string que o usuario entrou no plainTextEdit
+        user_input = self.current_widget_form.plainTextEdit.toPlainText()
+        user_input = user_input.replace('\n', '')
+        user_input = user_input.replace(' ', '')  
+        
+        # Tentar executar o elemento estrturante inputado pelo usuário.
+        try:
+            elem = eval('np.array(' + user_input + ')')
+        except:
+            self.exibe_janela_aviso('Expressão inválida. Por favor, siga o modelo!')
+            # Para a função.
+            return       
+        
+        thresh = self.get_number_whithout_error(self.current_widget_form.lineEdit_limiar.text(), 'int')
+
+
+        elem_center_x = self.get_number_whithout_error(self.current_widget_form.lineEdit_x.text(), 'int')
+        elem_center_y = self.get_number_whithout_error(self.current_widget_form.lineEdit_y.text(), 'int')
+
+        # Checar se o centro está dentro do tamanho do elemento:
+        try:
+            if elem_center_y>(elem.shape[1]-1) or elem_center_x>(elem.shape[0]-1):
+                self.exibe_janela_aviso('Valores do centro não coerentes.')
+                return
+        
+        except:
+            self.exibe_janela_aviso('Erro no elemento estruturante.')
+            return
+         
+        # check se a img é em tons de cinza
+        if len(self.img1.shape) == 3:
+            self.img1 = convert_color_para_pb(self.img1)
+            self.display_on(self.img1, self.ui.imgFrame1)
+            
+        elif len(self.img1.shape)==2:
+            pass
+
+        else:
+            return
+
+        # Desativar o botão
+        self.current_widget_form.pushButton.setEnabled(False)
+
+        # Realizar operação
+        self.img3 = abertura(self.img1, elem, (elem_center_x, elem_center_y))
+
+        # normalizar
+        self.img3 = normalize_uint8(255 * self.img3)
+
+        # mostrar na img 3.
+        self.display_on(self.img3, self.ui.imgFrame3)
+
+        self.current_widget_form.pushButton.setEnabled(True)
+
+    def call_resultado_fechamento(self):
+
+        # Receber as informações do usuário.
+
+        #Receber a string que o usuario entrou no plainTextEdit
+        user_input = self.current_widget_form.plainTextEdit.toPlainText()
+        user_input = user_input.replace('\n', '')
+        user_input = user_input.replace(' ', '')
+        
+        # Tentar executar o elemento estrturante inputado pelo usuário.
+        try:
+            elem = eval('np.array(' + user_input + ')')
+        except:
+            self.exibe_janela_aviso('Expressão inválida. Por favor, siga o modelo!')
+            # Para a função.
+            return       
+        
+        thresh = self.get_number_whithout_error(self.current_widget_form.lineEdit_limiar.text(), 'int')
+
+
+        elem_center_x = self.get_number_whithout_error(self.current_widget_form.lineEdit_x.text(), 'int')
+        elem_center_y = self.get_number_whithout_error(self.current_widget_form.lineEdit_y.text(), 'int')
+
+        # Checar se o centro está dentro do tamanho do elemento:
+        try:
+            if elem_center_y>(elem.shape[1]-1) or elem_center_x>(elem.shape[0]-1):
+                self.exibe_janela_aviso('Valores do centro não coerentes.')
+                return
+        
+        except:
+            self.exibe_janela_aviso('Erro no elemento estruturante.')
+            return
+         
+        # check se a img é em tons de cinza
+        if len(self.img1.shape) == 3:
+            self.img1 = convert_color_para_pb(self.img1)
+            self.display_on(self.img1, self.ui.imgFrame1)
+            
+        elif len(self.img1.shape)==2:
+            pass
+
+        else:
+            return
+
+
+        # Desativar o botão
+        self.current_widget_form.pushButton.setEnabled(False)
+
+        # Realizar operação
+        self.img3 = fechamento(self.img1, elem, (elem_center_x, elem_center_y))
+
+        # normalizar
+        self.img3 = normalize_uint8(255 * self.img3)
+
+        # mostrar na img 3.
+        self.display_on(self.img3, self.ui.imgFrame3)
+
+        self.current_widget_form.pushButton.setEnabled(True)
+
+    def call_resultado_extracao(self):
+        # Segmentação e extração de características.
+
+    
+        # check se a img é em tons de cinza
+        if len(self.img1.shape) == 3:
+            self.img1 = convert_color_para_pb(self.img1)
+
+        thresh = self.get_number_whithout_error(self.current_widget_form.lineEdit.text(), 'int')
+
+        # Converter para bin, só por garantia
+        self.img1 = convert_pb_para_bin(self.img1, thresh)
+
+        # Mostrar no display
+        self.display_on(self.img1, self.ui.imgFrame1)
+        
+        # Se o fundo for branco:
+        if self.current_widget_form.radioButton_fundo_branco.isChecked():
+            img = op_logica_not(self.img1)
+        else:
+            img = self.img1
+
+        # Segmentar:
+        img_segm, n_reg = segmentacao_a_la_eduardo(img)
+        
+        # Preparar para sobrepor
+        img = np.stack([self.img1, self.img1, self.img1],axis=-1)
+
+        # Desenhar na imagem as informações.
+        for reg in range(1, n_reg+1):
+            x, y, theta, w, h, ar, dx, dy, P0, P1 = comprimento_e_largura(img_segm, reg)
+
+            print('Regiao ', reg)
+            print('x= ', x)
+            print('y= ', y)
+            print('theta = ', theta)
+            print('area = ', ar)
+            print('w= ', w)
+            print('h= ', h)
+            print('dx= ', dx)
+            print('dx= ', dy)
+            #P0= ponto superior esquerdo do inicio da img
+            #P1= ponto inferior direito do inicio da img.
+            print()
+
+            # Retangulo e identificação
+            img = cv2.rectangle(img, P0, P1, (36,255,12), 2)
+            cv2.putText(img, str(reg), (P0[0], P0[1] -10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36,255,12), 2)
+
+            # Centro e orientação
+            cv2.circle(img, (x, y), 4, (255, 0, 255), 2)
+            P0_arrow = (int(x - h * np.cos(theta * np.pi/ 180)//2),
+                        int(y + h * np.sin(theta * np.pi/ 180)//2)  )
+
+            P1_arrow = (int(x + h * np.cos(theta * np.pi/ 180)//2),
+                        int(y - h * np.sin(theta * np.pi/ 180)//2)  )
+
+            cv2.arrowedLine(img, P0_arrow, P1_arrow, (0,0,255), thickness= 2)
+
+
+        self.display_on(img, self.ui.imgFrame3)
+
+        
 
     ##################################################### 
     ############# funções call_action  ##################
@@ -936,6 +1238,35 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.current_widget_form.pushButton.clicked.connect(
             self.call_resultado_passa_altas)
 
+    def call_action_dilatacao(self):
+        self.put_current_widget(ui_dilatacao_erosao_widget) 
+        self.current_widget_form.pushButton.clicked.connect(
+            self.call_resultado_dilatacao)
+        self.current_widget_form.labelOperacao.setText('Dilatação')
+    
+    def call_action_erosao(self):
+        self.put_current_widget(ui_dilatacao_erosao_widget) 
+        self.current_widget_form.pushButton.clicked.connect(
+            self.call_resultado_erosao)
+        self.current_widget_form.labelOperacao.setText('Erosão')
+    
+    def call_action_abertura(self):
+        self.put_current_widget(ui_dilatacao_erosao_widget) 
+        self.current_widget_form.pushButton.clicked.connect(
+            self.call_resultado_abertura)
+        self.current_widget_form.labelOperacao.setText('Abertura')
+
+    def call_action_fechamento(self):
+        self.put_current_widget(ui_dilatacao_erosao_widget) 
+        self.current_widget_form.pushButton.clicked.connect(
+            self.call_resultado_fechamento)
+        self.current_widget_form.labelOperacao.setText('Fechamento')
+
+    def call_action_extracao_caracteristicas(self):
+        self.put_current_widget(ui_extracao_widget) 
+        self.current_widget_form.pushButton.clicked.connect(
+            self.call_resultado_extracao)
+
     ################################################
     ############ outras funções ####################
     ################################################
@@ -1068,16 +1399,6 @@ class ApplicationWindow(QtWidgets.QMainWindow):
             print(the_string, 'is not valid for type ',data_type)
             return default_return
         
-
-    def dummy(self):
-        pass
-
-    def funcao1(self):
-        print('Funcao 1')
-
-    def funcao2(self):
-        print('Funcao 2')
-        self.exibe_janela_aviso('Olá!')
 
     def teste_setup(self):
         ''' Função para inicializar a gui em testes.'''

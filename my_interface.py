@@ -24,3 +24,7 @@ import ui_files.ui_laplaciano_widget as ui_laplaciano_widget
 import ui_files.ui_media_widget as ui_media_widget
 import ui_files.ui_mediana_widget as ui_mediana_widget
 import ui_files.ui_passa_altas_widget as ui_passa_altas_widget
+
+import ui_files.ui_dilatacao_erosao_widget as ui_dilatacao_erosao_widget
+# import ui_files.ui_erosao_widget as ui_erosao_widget
+import ui_files.ui_extracao_widget as ui_extracao_widget

@@ -428,12 +428,13 @@
      <string>Segmentação</string>
     </property>
     <addaction name="actionMulti_limiarizar"/>
+    <addaction name="actionSegmentacao"/>
    </widget>
    <widget class="QMenu" name="menuMais">
     <property name="title">
      <string>Mais</string>
     </property>
-    <addaction name="actionCaracter_sticas"/>
+    <addaction name="actionCaracteristicas"/>
     <addaction name="actionSURF"/>
     <addaction name="actionRuido"/>
    </widget>
@@ -550,7 +551,7 @@
     <string>Kirsch</string>
    </property>
   </action>
-  <action name="actionCaracter_sticas">
+  <action name="actionCaracteristicas">
    <property name="text">
     <string>Características</string>
    </property>
@@ -638,6 +639,11 @@
   <action name="actionRuido">
    <property name="text">
     <string>Adicionar Ruido</string>
+   </property>
+  </action>
+  <action name="actionSegmentacao">
+   <property name="text">
+    <string>Segmentação</string>
    </property>
   </action>
  </widget>
