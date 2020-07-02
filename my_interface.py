@@ -6,6 +6,7 @@ Suas dependências estão contidas no diretório ui_files
 
 from PyQt5 import QtGui, QtCore, QtWidgets
 
+
 from   ui_files.ui_mainWindow import*
 import ui_files.ui_template  as ui_template
 import ui_files.ui_start_widget  as ui_start_widget

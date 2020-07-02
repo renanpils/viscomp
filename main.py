@@ -7,8 +7,8 @@ Semestre: 2020.1
 Prof. Dr. Eduardo Oliveira Freire
 
 Aluno: Renan Praciano Ideburque Leal Sandes
-Data: Mai/2020
-Versão: 3
+Data: Jul/2020
+Versão: 5
 
 Descrição:
 Este aplicativo implementa as funções relativas às operações vistas ao longo da disciplina:
@@ -27,9 +27,17 @@ Funções implementadas nesta versão:
     - operações de transformações geométricas
     
     - operações de detecção de bordas:
-        - derivativo
-        - sobel
-        - kirsch
+        - derivativo, sobel, kirsch
+    
+    - Histogramas, equalização e autoescala
+    
+    - Filtros:
+        - média, mediana, gaussiano, laplaciano, passa altas
+    
+    - Morfologia:
+        - Erosão, Dilatação, Abertura e fechamento
+    
+    - Segmentação e Extração de características
 
 *** Observações para abrandar a leitura do código: ***
 
@@ -145,6 +153,8 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.ui.actionAutoescala.triggered.connect(self.call_action_autoescala)
         self.ui.actionLimiarizar_Global.triggered.connect(self.call_action_limiarizar_global)
         self.ui.actionLimiarizar_Otsu.triggered.connect(self.call_action_limarizar_otsu)
+        self.ui.actionLimiarizar_Bordas.triggered.connect(self.call_action_limarizar_bordas)
+
 
         # # filtros:
         self.ui.actionLaplaciano.triggered.connect(self.call_action_laplaciano)
@@ -162,6 +172,10 @@ class ApplicationWindow(QtWidgets.QMainWindow):
 
         # Extração e segmentação
         self.ui.actionCaracteristicas.triggered.connect(self.call_action_extracao_caracteristicas)
+
+        # SObre:
+        self.ui.actionSobre.triggered.connect(self.sobre)
+
 
     def put_current_widget(self, ui_widget):
         '''colocar um widget referente a uma função na tela'''
@@ -658,6 +672,26 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         # Exibir
         self.display_on(self.img3, self.ui.imgFrame3)
 
+    def call_resultado_limiarizar_bordas(self):
+        # check se a img é em tons de cinza
+        if len(self.img1.shape) == 3:
+            self.img1 = convert_color_para_pb(self.img1)
+            self.display_on(self.img1, self.ui.imgFrame1)
+            
+        elif len(self.img1.shape)==2:
+            pass
+
+        else:
+            return
+        
+        # limiarizar
+        self.img3, thresh_obtido = limiarizacao_por_bordas(self.img1)
+        
+        self.current_widget_form.label_2.setText(str(int(thresh_obtido)))
+
+        # Exibir
+        self.display_on(self.img3, self.ui.imgFrame3)
+
     def call_resultado_passa_altas(self):
         # check se a img é em tons de cinza
         if len(self.img1.shape) == 3:
@@ -913,6 +947,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
 
         self.current_widget_form.pushButton.setEnabled(True)
     
+
     def call_resultado_abertura(self):
 
         # Receber as informações do usuário.
@@ -970,6 +1005,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.display_on(self.img3, self.ui.imgFrame3)
 
         self.current_widget_form.pushButton.setEnabled(True)
+
 
     def call_resultado_fechamento(self):
 
@@ -1058,22 +1094,30 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         # Preparar para sobrepor
         img = np.stack([self.img1, self.img1, self.img1],axis=-1)
 
+        objects_info = []
+
         # Desenhar na imagem as informações.
         for reg in range(1, n_reg+1):
             x, y, theta, w, h, ar, dx, dy, P0, P1 = comprimento_e_largura(img_segm, reg)
+            
+            objects_info.append(
+            'Região {} \nx= {} \ny= {} \nângulo= {} graus \
+             \nárea= {} \nlargura= {} \ncomprimento= {}  \
+            \njanela: ({}, {}), \nCanto esquerdo superior: ({}, {}) \n\n'.format(
+                reg, x, y, theta, ar, w, h, dx, dy, P0[0], P0[1]))
 
-            print('Regiao ', reg)
-            print('x= ', x)
-            print('y= ', y)
-            print('theta = ', theta)
-            print('area = ', ar)
-            print('w= ', w)
-            print('h= ', h)
-            print('dx= ', dx)
-            print('dx= ', dy)
-            #P0= ponto superior esquerdo do inicio da img
-            #P1= ponto inferior direito do inicio da img.
-            print()
+            # print('Regiao ', reg)
+            # print('x= ', x)
+            # print('y= ', y)
+            # print('theta = ', theta)
+            # print('area = ', ar)
+            # print('w= ', w)
+            # print('h= ', h)
+            # print('dx= ', dx)
+            # print('dx= ', dy)
+            # #P0= ponto superior esquerdo do inicio da img
+            # #P1= ponto inferior direito do inicio da img.
+            # print()
 
             # Retangulo e identificação
             img = cv2.rectangle(img, P0, P1, (36,255,12), 2)
@@ -1092,7 +1136,20 @@ class ApplicationWindow(QtWidgets.QMainWindow):
 
         self.display_on(img, self.ui.imgFrame3)
 
+        salvar_em_txt = self.current_widget_form.checkBox.isChecked()
+        # Datetime object
+        try:
+            fileName = QtWidgets.QFileDialog.getSaveFileName(self)[0]
+            # Salvar em txt
+            if salvar_em_txt:
+                with open(fileName, 'w+', encoding='utf16') as f:
+                    for s in objects_info:
+                        print(s, file=f)
         
+            self.exibe_janela_aviso('Características salvas em: '+ fileName)
+
+        except:
+            self.exibe_janela_aviso('Dados não foram salvos')
 
     ##################################################### 
     ############# funções call_action  ##################
@@ -1207,12 +1264,16 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.current_widget_form.pushButton.clicked.connect(
             self.call_resultado_limiarizar_global)
 
-    
     def call_action_limarizar_otsu(self):
         self.put_current_widget(ui_limiarizar_widget) 
         self.current_widget_form.pushButton.clicked.connect(
             self.call_resultado_limiarizar_otsu)
     
+    def call_action_limarizar_bordas(self):
+        self.put_current_widget(ui_limiarizar_widget) 
+        self.current_widget_form.pushButton.clicked.connect(
+            self.call_resultado_limiarizar_bordas)
+
     def call_action_laplaciano(self):
         self.put_current_widget(ui_laplaciano_widget) 
         self.current_widget_form.pushButton.clicked.connect(
@@ -1292,30 +1353,27 @@ class ApplicationWindow(QtWidgets.QMainWindow):
                                  img.shape[1], 
                                  img.shape[0], 
                                  QtGui.QImage.Format_RGB888).rgbSwapped()   
-
-            # Ajustar o pixmap para caber no label.
-            if img.shape[0] < img.shape[1]:
-                #maior largura:
-                frme.setPixmap(QtGui.QPixmap.fromImage(image).scaledToWidth(frme.width()))
-            else:
-                #maior altura: 
-                frme.setPixmap(QtGui.QPixmap.fromImage(image).scaledToHeight(frme.height()))
-        
         elif tipo == 'pb':
             # Fazer o QImage da imagem, 
             image = QtGui.QImage(img,
                                  img.shape[1], 
                                  img.shape[0], 
                                  QtGui.QImage.Format_Grayscale8) 
-
-            # Ajustar o pixmap para caber no label.
-            if img.shape[0] < img.shape[1]:
-                #maior largura:
-                frme.setPixmap(QtGui.QPixmap.fromImage(image).scaledToWidth(frme.width()))
-            else:
-                #maior altura: 
-                frme.setPixmap(QtGui.QPixmap.fromImage(image).scaledToHeight(frme.height()))
         
+        # Se não funfar, retire este bloco 
+        myPixmap = QtGui.QPixmap.fromImage(image)
+        myScaledPixmap = myPixmap.scaled(frme.size(), QtCore.Qt.KeepAspectRatio)
+        frme.setPixmap(myScaledPixmap)
+
+        #FIXME!
+        # # Ajustar o pixmap para caber no label.
+        # if img.shape[0] < img.shape[1]:
+        #     #maior largura:
+        #     frme.setPixmap(QtGui.QPixmap.fromImage(image).scaledToWidth(frme.width()))
+        # else:
+        #     #maior altura: 
+        #     frme.setPixmap(QtGui.QPixmap.fromImage(image).scaledToHeight(frme.height()))
+    
         s = '{} x {}, dim: {}, dtype: {}, max: {}, min: {}'.format(img.shape[0],img.shape[1],
                                                            len(img.shape),img.dtype, 
                                                            np.max(img),np.min(img))
@@ -1357,14 +1415,10 @@ class ApplicationWindow(QtWidgets.QMainWindow):
 
     def call_action_salvar_resultado(self):
         
-        diag = QtWidgets.QFileDialog()
-        #  diag.setFileMode()
+        filename = QtWidgets.QFileDialog.getSaveFileName(self)
         
-        if diag.exec_():
-            print(diag.getSaveFileName())
-        else:
-            print('ops')
-
+        cv2.imwrite(filename[0], self.img3)
+        
 
     def call_copy_res_para_prin(self):
         self.img1 = self.img3.copy()
@@ -1383,6 +1437,39 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         msgbx.setIcon(QtWidgets.QMessageBox.Warning)
         msgbx.exec()
         self.ui.statusbar.setStatusTip(mensagem)
+
+    def exibe_boas_vindas(self):
+        '''
+        Exibir uma mensagem de boas vindas para o usuário.
+        '''
+        mensagem = \
+        """Seja bem vindo ao programa de visão computacional! \n\nPara usá-lo selecione uma função na barra de menus e depois execute a função com os parâmetros respectivos às funções.
+        \n\nProgramado por: Renan Sandes em Julho 2020
+        \nVisão Computacional 2020-1 PROEE UFS
+        \nProf. Eduardo O. Freire
+        \n o código fonte pode ser encontrado em: https://github.com/renanpils/viscomp
+
+        """
+
+        msgbx = QtWidgets.QMessageBox()
+        msgbx.setText(mensagem)
+        msgbx.exec()
+
+    def sobre(self):
+        '''
+        Exibir uma mensagem de boas vindas para o usuário.
+        '''
+        mensagem = \
+        """Programado por Renan Sandes\nContato: renanpils@gmail.com\nDisponível em https://github.com/renanpils/viscomp\nFavor entrar em contato sobre qualquer bug encontrado!
+        \nVisão Computacional 2020-1 PROEE UFS
+        
+
+        """
+
+        msgbx = QtWidgets.QMessageBox()
+        msgbx.setText(mensagem)
+        msgbx.exec()
+
 
     def get_number_whithout_error(self, the_string: str, data_type:str, default_return= 0):
         '''
@@ -1418,6 +1505,7 @@ def main():
     
     # Teste!
     application.teste_setup()
+    application.exibe_boas_vindas()
 
     #Função de teste para carregar automaticamente a img do yoda
     # Permite que a aplicação termine ao fechar a janela.

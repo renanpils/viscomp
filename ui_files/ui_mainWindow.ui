@@ -95,8 +95,8 @@
           <widget class="QLabel" name="imgFrame1">
            <property name="maximumSize">
             <size>
-             <width>309</width>
-             <height>219</height>
+             <width>310</width>
+             <height>220</height>
             </size>
            </property>
            <property name="styleSheet">
@@ -167,8 +167,8 @@
           <widget class="QLabel" name="imgFrame2">
            <property name="maximumSize">
             <size>
-             <width>309</width>
-             <height>219</height>
+             <width>310</width>
+             <height>220</height>
             </size>
            </property>
            <property name="styleSheet">
@@ -267,6 +267,12 @@
           <layout class="QVBoxLayout" name="verticalLayout_3">
            <item>
             <widget class="QLabel" name="imgFrame3">
+             <property name="maximumSize">
+              <size>
+               <width>420</width>
+               <height>340</height>
+              </size>
+             </property>
              <property name="text">
               <string>Escolha um operação no menu.</string>
              </property>
@@ -401,18 +407,25 @@
     <addaction name="actionHistograma"/>
     <addaction name="actionEqualizar"/>
     <addaction name="actionAutoescala"/>
-    <addaction name="actionLimiarizar_Global"/>
-    <addaction name="actionLimiarizar_Otsu"/>
    </widget>
    <widget class="QMenu" name="menuFiltros">
     <property name="title">
      <string>Filtros</string>
     </property>
+    <widget class="QMenu" name="menuLimiariza_o">
+     <property name="title">
+      <string>Limiarização</string>
+     </property>
+     <addaction name="actionLimiarizar_Global"/>
+     <addaction name="actionLimiarizar_Otsu"/>
+     <addaction name="actionLimiarizar_Bordas"/>
+    </widget>
     <addaction name="actionMedia"/>
     <addaction name="actionMediana"/>
     <addaction name="actionPassa_Alta"/>
     <addaction name="actionLaplaciano"/>
     <addaction name="actionGaussiano"/>
+    <addaction name="menuLimiariza_o"/>
    </widget>
    <widget class="QMenu" name="menuMorfologia">
     <property name="title">
@@ -423,20 +436,17 @@
     <addaction name="actionAbretura"/>
     <addaction name="actionFechamento"/>
    </widget>
-   <widget class="QMenu" name="menuSegmenta_o">
-    <property name="title">
-     <string>Segmentação</string>
-    </property>
-    <addaction name="actionMulti_limiarizar"/>
-    <addaction name="actionSegmentacao"/>
-   </widget>
    <widget class="QMenu" name="menuMais">
+    <property name="title">
+     <string>Características</string>
+    </property>
+    <addaction name="actionCaracteristicas"/>
+   </widget>
+   <widget class="QMenu" name="menuMais_2">
     <property name="title">
      <string>Mais</string>
     </property>
-    <addaction name="actionCaracteristicas"/>
-    <addaction name="actionSURF"/>
-    <addaction name="actionRuido"/>
+    <addaction name="actionSobre"/>
    </widget>
    <addaction name="menuArquivo"/>
    <addaction name="menuConverter"/>
@@ -447,8 +457,8 @@
    <addaction name="menuHistogramas"/>
    <addaction name="menuFiltros"/>
    <addaction name="menuMorfologia"/>
-   <addaction name="menuSegmenta_o"/>
    <addaction name="menuMais"/>
+   <addaction name="menuMais_2"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionAbrir_para_principal">
@@ -553,7 +563,7 @@
   </action>
   <action name="actionCaracteristicas">
    <property name="text">
-    <string>Características</string>
+    <string>Extrair Características</string>
    </property>
   </action>
   <action name="actionSURF">
@@ -644,6 +654,21 @@
   <action name="actionSegmentacao">
    <property name="text">
     <string>Segmentação</string>
+   </property>
+  </action>
+  <action name="actionSobre">
+   <property name="text">
+    <string>Sobre</string>
+   </property>
+  </action>
+  <action name="actionBugs_conhecidos">
+   <property name="text">
+    <string>Bugs conhecidos</string>
+   </property>
+  </action>
+  <action name="actionLimiarizar_Bordas">
+   <property name="text">
+    <string>Limiarizar Bordas</string>
    </property>
   </action>
  </widget>

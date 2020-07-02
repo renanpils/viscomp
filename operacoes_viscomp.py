@@ -5,7 +5,7 @@ Programador: Renan Sandes
 Data: Mai/2020
 '''
 
-import time
+import time, datetime
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
@@ -1216,6 +1216,8 @@ def segmentacao_a_la_eduardo(img_in:np.ndarray, limiar=0):
     vals = list(range(1,region_counter+1))
     h    = list(np.zeros(len(vals)))
     
+    n_regions = len(vals)
+    
     # criar um histograma
     for i, val in enumerate(vals):
         h[i] = np.sum(imgRes == val)
@@ -1328,6 +1330,8 @@ def calcular_area(img:np.ndarray, value = 1):
 
 def comprimento_e_largura(img_in:np.ndarray, value):
     '''
+    Realiza a extração de características de uma imagem segmentada.
+
     retorna a posição, orientação em graus e a área de um objeto com valor == value
     na img segmentada.
 
@@ -1405,6 +1409,6 @@ def limiarizacao_por_bordas(img: np.ndarray, limiar_bordas = 127):
     # Thresh = média dos pixels selecionados de borda
     thresh = np.sum(img[bordas>limiar_bordas]) / np.sum(bordas>limiar_bordas)
     
-    return thresh
+    return (np.uint8(255*(img>=thresh)) , thresh)
 
 

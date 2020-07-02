@@ -31,9 +31,6 @@ class Ui_Form(object):
         self.pushButton.setStyleSheet("background-color: rgb(0, 50, 100);\n"
 "font: 75 8pt \"MS Shell Dlg 2\";")
         self.pushButton.setObjectName("pushButton")
-        self.label_2 = QtWidgets.QLabel(Form)
-        self.label_2.setGeometry(QtCore.QRect(20, 30, 291, 16))
-        self.label_2.setObjectName("label_2")
         self.verticalLayoutWidget = QtWidgets.QWidget(Form)
         self.verticalLayoutWidget.setGeometry(QtCore.QRect(310, 60, 91, 80))
         self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
@@ -67,6 +64,9 @@ class Ui_Form(object):
         self.lineEdit = QtWidgets.QLineEdit(Form)
         self.lineEdit.setGeometry(QtCore.QRect(190, 70, 41, 20))
         self.lineEdit.setObjectName("lineEdit")
+        self.checkBox = QtWidgets.QCheckBox(Form)
+        self.checkBox.setGeometry(QtCore.QRect(150, 100, 131, 31))
+        self.checkBox.setObjectName("checkBox")
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
@@ -76,11 +76,12 @@ class Ui_Form(object):
         Form.setWindowTitle(_translate("Form", "Form"))
         self.label.setText(_translate("Form", "Extração de caracteristicas."))
         self.pushButton.setText(_translate("Form", "Extrair características"))
-        self.label_2.setText(_translate("Form", "Ao final, verifique o terminal para ver as características"))
         self.radioButton_fundo_branco.setText(_translate("Form", "Fundo Branco"))
         self.radioButton_fundo_preto.setText(_translate("Form", "Fundo Preto"))
         self.label_3.setText(_translate("Form", "Limiar:"))
         self.lineEdit.setText(_translate("Form", "127"))
+        self.checkBox.setText(_translate("Form", "Salvar características \n"
+"em .txt?"))
 
 
 if __name__ == "__main__":
