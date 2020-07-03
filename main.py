@@ -1133,8 +1133,10 @@ class ApplicationWindow(QtWidgets.QMainWindow):
 
             cv2.arrowedLine(img, P0_arrow, P1_arrow, (0,0,255), thickness= 2)
 
+        # Salvar img na variável
+        self.img3 = img
 
-        self.display_on(img, self.ui.imgFrame3)
+        self.display_on(self.img3, self.ui.imgFrame3)
 
         salvar_em_txt = self.current_widget_form.checkBox.isChecked()
         # Datetime object
@@ -1417,7 +1419,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         
         filename = QtWidgets.QFileDialog.getSaveFileName(self)
         
-        cv2.imwrite(filename[0], self.img3)
+        cv2.imwrite(filename[0], np.uint8(self.img3))
         
 
     def call_copy_res_para_prin(self):

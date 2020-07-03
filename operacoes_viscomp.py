@@ -1193,9 +1193,9 @@ def segmentacao_a_la_eduardo(img_in:np.ndarray, limiar=0):
                     imgRes[i,j] = current_counter
                     
                     # Marcar o que tiver que marcar à direita e abaixo
-                    imgRes[i+1, j] = current_counter if imgRes[i+1, j] else imgRes[i+1, j]
-                    imgRes[i, j+1] = current_counter if imgRes[i, j+1] else imgRes[i, j+1]
-
+                    imgRes[i+1, j] = current_counter if img[i+1, j] else imgRes[i+1, j]
+                    imgRes[i, j+1] = current_counter if img[i, j+1] else imgRes[i, j+1]
+    #######
 
     # Verificar por regiões onde há conflitos de regiões:
     # Escanear elemento a elemento:
@@ -1211,16 +1211,18 @@ def segmentacao_a_la_eduardo(img_in:np.ndarray, limiar=0):
                 # Se o anterior estiver ativo e for diferente 
                 if imgRes[i, j-1] and imgRes[i, j-1]!= imgRes[i, j]:
                     imgRes[i, j-1] = imgRes[i, j]
-
+    ###
     # Reorganizar as regiões
-    vals = list(range(1,region_counter+1))
-    h    = list(np.zeros(len(vals)))
-    
+    vals = list(range(1,region_counter+1)) #[1 2 3 4 5 6 7 8 9 10]
+    h    = list(np.zeros(len(vals)))        
+
+    #
     n_regions = len(vals)
     
+
     # criar um histograma
     for i, val in enumerate(vals):
-        h[i] = np.sum(imgRes == val)
+        h[i] = np.sum(imgRes == val)      #[1 2 3 x x x 7 8 x 10]
 
     # Caso haja algum zero: corrigir
     if not np.all(h):
@@ -1243,7 +1245,7 @@ def segmentacao_a_la_eduardo(img_in:np.ndarray, limiar=0):
                 break    
         
         #refazer o histograma:
-        vals_novos = np.arange(1,len(vals)+1)
+        vals_novos = np.arange(1,len(vals)+1) #[1 2 3 4 5 6 ]
         
         for val_antigo, val_novo in zip(vals, vals_novos):
             imgRes[imgRes== val_antigo] = val_novo
